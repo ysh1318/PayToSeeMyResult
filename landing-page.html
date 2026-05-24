@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Result Monetization — Yash ka Jugaad</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=Cormorant+Garamond:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060608;
+  --surface: #0e0e16;
+  --surface2: #13131f;
+  --border: #1c1c2e;
+  --border2: #252535;
+  --accent: #7fff6e;
+  --accent2: #ff6b35;
+  --accent3: #b06bff;
+  --gold: #ffd700;
+  --cyan: #00e5ff;
+  --danger: #ff4455;
+  --text: #e4e4f0;
+  --muted: #5a5a7a;
+  --muted2: #8888aa;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Syne',sans-serif;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+
+/* GRID BG */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(127,255,110,0.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(127,255,110,0.025) 1px,transparent 1px);
+  background-size:44px 44px;
+  pointer-events:none;z-index:0;
+}
+
+/* ORB BGs */
+.orb1{position:fixed;width:700px;height:700px;background:radial-gradient(circle,rgba(176,107,255,0.07) 0%,transparent 65%);top:-200px;left:50%;transform:translateX(-50%);pointer-events:none;z-index:0;}
+.orb2{position:fixed;width:400px;height:400px;background:radial-gradient(circle,rgba(127,255,110,0.05) 0%,transparent 65%);bottom:-100px;right:-50px;pointer-events:none;z-index:0;}
+.orb3{position:fixed;width:300px;height:300px;background:radial-gradient(circle,rgba(0,229,255,0.04) 0%,transparent 65%);bottom:30%;left:-80px;pointer-events:none;z-index:0;}
+
+/* WRAPPER */
+.wrapper{position:relative;z-index:1;max-width:900px;margin:0 auto;padding:0 20px 80px;}
+
+/* ——— HERO HEADER ——— */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  padding:60px 20px;
+  gap:0;
+}
+
+.eyebrow{
+  font-family:'Space Mono',monospace;
+  font-size:10px;letter-spacing:0.3em;
+  color:var(--muted2);text-transform:uppercase;
+  margin-bottom:24px;
+  animation: fadeUp 0.8s ease both;
+}
+
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid rgba(127,255,110,0.25);
+  background:rgba(127,255,110,0.05);
+  border-radius:100px;
+  padding:7px 18px;
+  font-family:'Space Mono',monospace;font-size:11px;
+  color:var(--accent);letter-spacing:0.1em;
+  margin-bottom:28px;
+  animation: fadeUp 0.8s 0.1s ease both;
+}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.5s ease infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.7);}}
+
+.hero-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(4rem,13vw,9.5rem);
+  line-height:0.88;
+  letter-spacing:0.015em;
+  margin-bottom:14px;
+  animation: fadeUp 0.9s 0.15s ease both;
+}
+.hero-title .t1{display:block;color:var(--text);}
+.hero-title .t2{
+  display:block;
+  background:linear-gradient(90deg,var(--accent),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-title .t3{
+  display:block;font-size:0.38em;
+  font-family:'Space Mono',monospace;font-weight:400;
+  color:var(--muted2);letter-spacing:0.2em;margin-top:10px;
+}
+
+.hero-tagline{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-weight:300;
+  font-size:clamp(1rem,2.5vw,1.4rem);
+  color:var(--muted2);
+  line-height:1.7;
+  max-width:520px;
+  margin:18px auto 36px;
+  animation: fadeUp 0.9s 0.25s ease both;
+}
+.hero-tagline strong{color:var(--accent2);font-style:normal;font-weight:700;}
+
+.cta-btn{
+  display:inline-flex;align-items:center;gap:12px;
+  background:linear-gradient(90deg,rgba(127,255,110,0.15),rgba(0,229,255,0.1));
+  border:1px solid rgba(127,255,110,0.35);
+  color:var(--accent);
+  font-family:'Space Mono',monospace;
+  font-size:13px;font-weight:700;letter-spacing:0.08em;
+  padding:16px 32px;border-radius:12px;
+  text-decoration:none;
+  transition:all 0.3s cubic-bezier(.2,.8,.2,1);
+  animation: fadeUp 0.9s 0.35s ease both;
+}
+.cta-btn:hover{
+  background:linear-gradient(90deg,rgba(127,255,110,0.25),rgba(0,229,255,0.18));
+  box-shadow:0 12px 40px rgba(127,255,110,0.12);
+  transform:translateY(-3px);
+}
+.cta-btn .arrow{transition:transform 0.2s;}
+.cta-btn:hover .arrow{transform:translateX(4px);}
+
+.hero-url{
+  font-family:'Space Mono',monospace;font-size:11px;
+  color:var(--muted);letter-spacing:0.12em;
+  margin-top:16px;
+  animation: fadeUp 0.9s 0.4s ease both;
+}
+.hero-url a{color:var(--cyan);text-decoration:none;border-bottom:1px solid rgba(0,229,255,0.3);transition:color 0.2s;}
+.hero-url a:hover{color:#fff;}
+
+/* SCROLL HINT */
+.scroll-hint{
+  margin-top:48px;
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.2em;
+  color:var(--muted);text-transform:uppercase;
+  animation: fadeUp 1s 0.6s ease both;
+}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--muted),transparent);animation:scrollPulse 2s ease-in-out infinite;}
+@keyframes scrollPulse{0%,100%{opacity:0.4;transform:scaleY(1);}50%{opacity:1;transform:scaleY(1.15);}}
+
+/* ——— SECTION DIVIDER ——— */
+.sec-label{
+  font-family:'Space Mono',monospace;font-size:10px;
+  letter-spacing:0.2em;color:var(--muted);text-transform:uppercase;
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:32px;
+}
+.sec-label::before,.sec-label::after{content:'';flex:1;height:1px;background:var(--border2);}
+
+/* ——— FEATURES GRID ——— */
+.features-section{padding:80px 0 40px;}
+.features-section .intro{
+  text-align:center;margin-bottom:52px;
+}
+.features-section .intro h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.5rem,6vw,4.5rem);
+  color:var(--text);letter-spacing:0.03em;
+  margin-bottom:10px;
+}
+.features-section .intro h2 span{color:var(--accent3);}
+.features-section .intro p{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:1.15rem;
+  color:var(--muted2);max-width:480px;margin:0 auto;
+}
+
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:16px;
+}
+
+.feat-card{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:20px;
+  padding:32px 28px;
+  position:relative;overflow:hidden;
+  transition:all 0.35s cubic-bezier(.2,.8,.2,1);
+}
+.feat-card::before{
+  content:'';position:absolute;inset:0;opacity:0;
+  transition:opacity 0.35s;pointer-events:none;
+}
+.feat-card:hover{transform:translateY(-5px);}
+
+/* Card color variants */
+.fc-green::before{background:radial-gradient(ellipse at 50% 0%,rgba(127,255,110,0.09) 0%,transparent 70%);opacity:1;}
+.fc-green:hover{border-color:rgba(127,255,110,0.35);box-shadow:0 18px 55px rgba(127,255,110,0.07);}
+.fc-purple::before{background:radial-gradient(ellipse at 50% 0%,rgba(176,107,255,0.09) 0%,transparent 70%);opacity:1;}
+.fc-purple:hover{border-color:rgba(176,107,255,0.35);box-shadow:0 18px 55px rgba(176,107,255,0.07);}
+.fc-gold::before{background:radial-gradient(ellipse at 50% 0%,rgba(255,215,0,0.09) 0%,transparent 70%);opacity:1;}
+.fc-gold:hover{border-color:rgba(255,215,0,0.35);box-shadow:0 18px 55px rgba(255,215,0,0.07);}
+.fc-cyan::before{background:radial-gradient(ellipse at 50% 0%,rgba(0,229,255,0.09) 0%,transparent 70%);opacity:1;}
+.fc-cyan:hover{border-color:rgba(0,229,255,0.35);box-shadow:0 18px 55px rgba(0,229,255,0.07);}
+.fc-orange::before{background:radial-gradient(ellipse at 50% 0%,rgba(255,107,53,0.09) 0%,transparent 70%);opacity:1;}
+.fc-orange:hover{border-color:rgba(255,107,53,0.35);box-shadow:0 18px 55px rgba(255,107,53,0.07);}
+.fc-red::before{background:radial-gradient(ellipse at 50% 0%,rgba(255,68,85,0.09) 0%,transparent 70%);opacity:1;}
+.fc-red:hover{border-color:rgba(255,68,85,0.25);}
+
+.feat-emoji{font-size:2.4rem;margin-bottom:16px;display:block;}
+.feat-tag{
+  font-family:'Space Mono',monospace;font-size:9px;
+  letter-spacing:0.14em;text-transform:uppercase;
+  padding:3px 10px;border-radius:100px;
+  border:1px solid;display:inline-block;
+  margin-bottom:12px;
+}
+.fc-green .feat-tag{color:var(--accent);border-color:rgba(127,255,110,0.3);background:rgba(127,255,110,0.06);}
+.fc-purple .feat-tag{color:var(--accent3);border-color:rgba(176,107,255,0.3);background:rgba(176,107,255,0.06);}
+.fc-gold .feat-tag{color:var(--gold);border-color:rgba(255,215,0,0.3);background:rgba(255,215,0,0.06);}
+.fc-cyan .feat-tag{color:var(--cyan);border-color:rgba(0,229,255,0.3);background:rgba(0,229,255,0.06);}
+.fc-orange .feat-tag{color:var(--accent2);border-color:rgba(255,107,53,0.3);background:rgba(255,107,53,0.06);}
+.fc-red .feat-tag{color:var(--danger);border-color:rgba(255,68,85,0.3);background:rgba(255,68,85,0.06);}
+
+.feat-title{
+  font-size:1.25rem;font-weight:800;
+  margin-bottom:8px;line-height:1.2;
+}
+.fc-green .feat-title{color:var(--accent);}
+.fc-purple .feat-title{color:var(--accent3);}
+.fc-gold .feat-title{color:var(--gold);}
+.fc-cyan .feat-title{color:var(--cyan);}
+.fc-orange .feat-title{color:var(--accent2);}
+.fc-red .feat-title{color:var(--danger);}
+
+.feat-hindi{
+  font-family:'Space Mono',monospace;
+  font-size:11px;font-style:italic;
+  color:var(--muted2);margin-bottom:12px;
+  line-height:1.5;
+}
+.feat-desc{
+  font-size:13px;color:var(--muted2);
+  line-height:1.7;
+}
+.feat-desc strong{color:var(--text);}
+
+/* ——— TIER TABLE ——— */
+.tiers-section{padding:60px 0;}
+.tiers-section .intro{text-align:center;margin-bottom:44px;}
+.tiers-section .intro h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.2rem,5vw,3.8rem);
+  color:var(--text);letter-spacing:0.03em;margin-bottom:8px;
+}
+.tiers-section .intro h2 span{
+  background:linear-gradient(90deg,var(--gold),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.tiers-section .intro p{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:1.1rem;color:var(--muted2);
+}
+
+.tier-strip{
+  display:flex;flex-direction:column;gap:10px;
+}
+.ts-row{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:14px;padding:18px 22px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  transition:all 0.25s;
+}
+.ts-row:hover{transform:translateX(4px);}
+.ts-badge{
+  font-family:'Space Mono',monospace;font-size:10px;
+  padding:5px 13px;border-radius:7px;
+  letter-spacing:0.08em;white-space:nowrap;min-width:80px;text-align:center;
+}
+.tb-free{background:rgba(127,255,110,0.08);color:var(--accent);border:1px solid rgba(127,255,110,0.2);}
+.tb-bronze{background:rgba(205,127,50,0.1);color:#cd7f32;border:1px solid rgba(205,127,50,0.25);}
+.tb-silver{background:rgba(200,200,216,0.08);color:#c8c8d8;border:1px solid rgba(200,200,216,0.2);}
+.tb-gold{background:rgba(255,215,0,0.08);color:var(--gold);border:1px solid rgba(255,215,0,0.2);}
+.tb-ultra{background:rgba(176,107,255,0.08);color:var(--accent3);border:1px solid rgba(176,107,255,0.2);}
+
+.ts-info{flex:1;min-width:180px;}
+.ts-title{font-weight:700;font-size:0.95rem;margin-bottom:3px;}
+.ts-desc{font-size:12px;color:var(--muted2);font-family:'Space Mono',monospace;line-height:1.5;}
+.ts-price{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.9rem;white-space:nowrap;
+}
+.tp-free{color:var(--accent);}
+.tp-bronze{color:#cd7f32;}
+.tp-silver{color:#c8c8d8;}
+.tp-gold{color:var(--gold);}
+.tp-ultra{color:var(--accent3);}
+
+/* ——— HOW IT WORKS ——— */
+.how-section{padding:60px 0;}
+.how-section .intro{text-align:center;margin-bottom:44px;}
+.how-section .intro h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.2rem,5vw,3.8rem);
+  color:var(--text);letter-spacing:0.03em;margin-bottom:8px;
+}
+.how-section .intro h2 span{color:var(--cyan);}
+.how-section .intro p{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:1.1rem;color:var(--muted2);
+}
+.steps-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:14px;
+}
+.step-card{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:16px;padding:28px 22px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.step-num{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:4rem;line-height:1;
+  color:rgba(127,255,110,0.06);
+  position:absolute;top:10px;right:16px;
+  pointer-events:none;
+}
+.step-icon{font-size:1.8rem;margin-bottom:12px;}
+.step-title{font-size:0.95rem;font-weight:800;margin-bottom:6px;color:var(--text);}
+.step-desc{font-size:12px;color:var(--muted2);line-height:1.65;}
+.step-hinglish{
+  font-family:'Space Mono',monospace;font-size:10px;
+  font-style:italic;color:var(--accent2);
+  margin-top:10px;line-height:1.5;
+}
+
+/* ——— FINAL CTA ——— */
+.final-cta{
+  margin:60px 0;
+  background:var(--surface);
+  border:1px solid rgba(127,255,110,0.2);
+  border-radius:24px;
+  padding:56px 40px;
+  text-align:center;
+  position:relative;overflow:hidden;
+}
+.final-cta::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(127,255,110,0.07) 0%,transparent 65%);
+  pointer-events:none;
+}
+.final-cta h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.5rem,7vw,5rem);
+  letter-spacing:0.02em;line-height:0.95;
+  margin-bottom:12px;
+}
+.final-cta h2 .l1{color:var(--text);}
+.final-cta h2 .l2{
+  background:linear-gradient(90deg,var(--accent),var(--cyan));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.final-cta .subtext{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:1.15rem;
+  color:var(--muted2);max-width:420px;margin:0 auto 36px;
+}
+.final-cta .subtext strong{color:var(--accent2);font-style:normal;}
+.cta-btn-big{
+  display:inline-flex;align-items:center;gap:14px;
+  background:linear-gradient(90deg,rgba(127,255,110,0.18),rgba(0,229,255,0.12));
+  border:1px solid rgba(127,255,110,0.4);
+  color:var(--accent);font-family:'Space Mono',monospace;
+  font-size:14px;font-weight:700;letter-spacing:0.08em;
+  padding:18px 40px;border-radius:14px;
+  text-decoration:none;
+  transition:all 0.3s cubic-bezier(.2,.8,.2,1);
+}
+.cta-btn-big:hover{
+  background:linear-gradient(90deg,rgba(127,255,110,0.28),rgba(0,229,255,0.22));
+  box-shadow:0 16px 50px rgba(127,255,110,0.15);
+  transform:translateY(-4px);
+}
+.final-url{
+  margin-top:20px;
+  font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);
+}
+.final-url a{color:var(--cyan);text-decoration:none;letter-spacing:0.08em;border-bottom:1px solid rgba(0,229,255,0.25);}
+.final-url a:hover{color:#fff;}
+
+/* FOOTER */
+footer{
+  border-top:1px solid var(--border);
+  padding:28px 0;
+  text-align:center;
+  font-family:'Space Mono',monospace;font-size:10px;
+  color:var(--muted);letter-spacing:0.1em;
+}
+footer a{color:var(--cyan);text-decoration:none;}
+footer a:hover{color:#fff;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(22px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .features-grid{grid-template-columns:1fr;}
+  .steps-grid{grid-template-columns:1fr 1fr;}
+  .final-cta{padding:40px 24px;}
+  .ts-row{flex-wrap:wrap;}
+}
+@media(max-width:420px){
+  .steps-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="orb1"></div>
+<div class="orb2"></div>
+<div class="orb3"></div>
+
+<!-- ——— HERO ——— -->
+<section class="hero">
+  <div class="eyebrow">Yash Presents · Exclusive Platform · 2025</div>
+
+  <div class="hero-badge">
+    <span class="dot"></span>
+    Live & Working — Abhi Access Lo
+  </div>
+
+  <h1 class="hero-title">
+    <span class="t1">RESULT</span>
+    <span class="t2">MONETIZATION</span>
+    <span class="t3">by Yash — Apna Result, Apna Paisa</span>
+  </h1>
+
+  <p class="hero-tagline">
+    Bhai, result aaya? Ab sirf dekho mat —
+    <strong>usse earn karo, share karo, aur premium banao.</strong>
+    Yash ne banaya hai sab kuch tumhare liye.
+  </p>
+
+  <a href="https://resultmonetisation3314.netlify.app/" target="_blank" class="cta-btn">
+    Site Visit Karo &nbsp;<span class="arrow">→</span>
+  </a>
+
+  <p class="hero-url">
+    🔗 &nbsp;<a href="https://resultmonetisation3314.netlify.app/" target="_blank">resultmonetisation3314.netlify.app</a>
+  </p>
+
+  <div class="scroll-hint">
+    <span>scroll karo</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ——— FEATURES ——— -->
+<div class="wrapper">
+
+  <section class="features-section">
+    <div class="intro">
+      <div class="sec-label">Features</div>
+      <h2>Kya milega <span>andar?</span></h2>
+      <p>Ek platform — teen kaam, aur ek bhi kaam boring nahi.</p>
+    </div>
+
+    <div class="features-grid">
+
+      <!-- EARN -->
+      <div class="feat-card fc-green">
+        <span class="feat-emoji">💰</span>
+        <span class="feat-tag">Earn Mode</span>
+        <div class="feat-title">Apna Result Sell Karo</div>
+        <div class="feat-hindi">— "Marks toh aye, ab paisa bhi aayega" —</div>
+        <div class="feat-desc">
+          Result screenshot upload karo, UPI daalo, price set karo —
+          <strong>bas itna kaam hai tumhara.</strong>
+          Yash ka system baaki sab handle karega. Bronze se Ultra tak,
+          tum decide karo kitna unlock hoga.
+        </div>
+      </div>
+
+      <!-- TIERS -->
+      <div class="feat-card fc-gold">
+        <span class="feat-emoji">🏆</span>
+        <span class="feat-tag">Tier System</span>
+        <div class="feat-title">Poor → Bronze → Silver → Gold → Ultra</div>
+        <div class="feat-hindi">— "Har tier pe ek alag duniya" —</div>
+        <div class="feat-desc">
+          5 tier system — <strong>Free se Ultra tak.</strong>
+          Jitna premium, utna zyada content unlock.
+          Screenshot blur rehti hai jab tak payment nahi hoti. Ekdum secure jugaad.
+        </div>
+      </div>
+
+      <!-- BUY -->
+      <div class="feat-card fc-purple">
+        <span class="feat-emoji">👀</span>
+        <span class="feat-tag">Buy Mode</span>
+        <div class="feat-title">Doosron ka Result Dekho</div>
+        <div class="feat-hindi">— "Nosy hona ab legal hai" —</div>
+        <div class="feat-desc">
+          Classmates, dost, rival — sab ka result ek jagah.
+          UPI se pay karo, screenshot upload karo proof mein,
+          aur <strong>verification ke baad full result unlock</strong> ho jaata hai. Simple.
+        </div>
+      </div>
+
+      <!-- UPI PAYMENT -->
+      <div class="feat-card fc-cyan">
+        <span class="feat-emoji">📲</span>
+        <span class="feat-tag">UPI + QR</span>
+        <div class="feat-title">UPI se Direct Payment</div>
+        <div class="feat-hindi">— "GPay karo aur enjoy karo" —</div>
+        <div class="feat-desc">
+          Owner apna UPI ID aur QR code set karta hai.
+          Buyer directly pay karta hai, screenshot upload karta hai proof ke liye.
+          <strong>Koi middleman nahi, koi commission cut nahi.</strong> Poora paisa tumhara.
+        </div>
+      </div>
+
+      <!-- STUDENT DASHBOARD -->
+      <div class="feat-card fc-orange">
+        <span class="feat-emoji">📊</span>
+        <span class="feat-tag">Dashboard</span>
+        <div class="feat-title">Apna Dashboard, Apna Control</div>
+        <div class="feat-hindi">— "CEO wali feeling, student price mein" —</div>
+        <div class="feat-desc">
+          Pending requests, approved payments, total earnings —
+          sab ek jagah pe. <strong>Approve ya reject</strong> karo requests apni marzi se.
+          Real-time updates, clean UI, zero confusion.
+        </div>
+      </div>
+
+      <!-- COMMENTS -->
+      <div class="feat-card fc-red">
+        <span class="feat-emoji">💬</span>
+        <span class="feat-tag">Comments</span>
+        <div class="feat-title">Log Kya Bol Rahe Hain?</div>
+        <div class="feat-hindi">— "Taang khichai allowed hai yahan" —</div>
+        <div class="feat-desc">
+          Result dekh ke comment karo. Owner ne set kiya hai per-comment price bhi.
+          <strong>Har tier pe comments ka alag level.</strong>
+          Apne dosto ko roast karo — professionally.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ——— TIERS ——— -->
+  <section class="tiers-section">
+    <div class="intro">
+      <div class="sec-label">Pricing Tiers</div>
+      <h2>Kitna <span>unlockable hai?</span></h2>
+      <p>Owner set karta hai price, buyer decide karta hai tier.</p>
+    </div>
+
+    <div class="tier-strip">
+      <div class="ts-row">
+        <span class="ts-badge tb-free">FREE</span>
+        <div class="ts-info">
+          <div class="ts-title">Free Tier — "Jhalkee milegi"</div>
+          <div class="ts-desc">Basic info — naam, class, section. Result blur rehega. Bas<br>curiosity jagane ke liye.</div>
+        </div>
+        <div class="ts-price tp-free">₹0</div>
+      </div>
+      <div class="ts-row">
+        <span class="ts-badge tb-bronze">BRONZE</span>
+        <div class="ts-info">
+          <div class="ts-title">Bronze Tier — "Thoda khulaasa"</div>
+          <div class="ts-desc">Pass/Fail status unlock. Screenshot partially visible. Entry-level nosy banne ka mauka.</div>
+        </div>
+        <div class="ts-price tp-bronze">Owner Sets</div>
+      </div>
+      <div class="ts-row">
+        <span class="ts-badge tb-silver">SILVER</span>
+        <div class="ts-info">
+          <div class="ts-title">Silver Tier — "Ab baat karne layak"</div>
+          <div class="ts-desc">Subject-wise marks + grade. Ab pata chalega actual performance ka haal.</div>
+        </div>
+        <div class="ts-price tp-silver">Owner Sets</div>
+      </div>
+      <div class="ts-row">
+        <span class="ts-badge tb-gold">GOLD</span>
+        <div class="ts-info">
+          <div class="ts-title">Gold Tier — "VIP access"</div>
+          <div class="ts-desc">Full result screenshot unlock. Percentage, rank, everything. Aur comments bhi!</div>
+        </div>
+        <div class="ts-price tp-gold">Owner Sets</div>
+      </div>
+      <div class="ts-row">
+        <span class="ts-badge tb-ultra">ULTRA</span>
+        <div class="ts-info">
+          <div class="ts-title">Ultra Tier — "Bhai yaar wala access"</div>
+          <div class="ts-desc">Premium comments + direct baat karne ka option. Maximum info, maximum taang khichai.</div>
+        </div>
+        <div class="ts-price tp-ultra">Owner Sets</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ——— HOW IT WORKS ——— -->
+  <section class="how-section">
+    <div class="intro">
+      <div class="sec-label">How It Works</div>
+      <h2>Use karna hai <span>ekdum easy</span></h2>
+      <p>3 steps mein shuru karo — promise, no rocket science.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-icon">📝</div>
+        <div class="step-title">Profile Banao</div>
+        <div class="step-desc">Result screenshot, UPI ID, aur tier prices set karo. 5 minute ka kaam.</div>
+        <div class="step-hinglish">"Setup mein zyada time mat lagao bhai"</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-icon">🔗</div>
+        <div class="step-title">Link Share Karo</div>
+        <div class="step-desc">Apna profile link classmates, dosto aur rivals ko bhejo. WhatsApp pe daal do.</div>
+        <div class="step-hinglish">"Status pe daal do, khud aa jaayenge"</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-icon">💸</div>
+        <div class="step-title">Paisa Receive Karo</div>
+        <div class="step-desc">Jab koi tier unlock kare, payment seedha tumhare UPI pe. Approve karo aur done.</div>
+        <div class="step-hinglish">"GPay notification — best sound"</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <div class="step-icon">🎭</div>
+        <div class="step-title">Enjoy the Drama</div>
+        <div class="step-desc">Comments padho, reactions dekho. Apna result itna interesting kabhi nahi tha.</div>
+        <div class="step-hinglish">"Entertainment + earnings — dono saath"</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ——— FINAL CTA ——— -->
+  <div class="final-cta">
+    <h2>
+      <span class="l1">AB KYA SOCH RAHA HAI</span><br>
+      <span class="l2">SEEDHA VISIT KAR</span>
+    </h2>
+    <p class="subtext">
+      Free hai, fast hai, aur Yash ne <strong>dil se banaya hai.</strong><br>
+      Bas ek click door hai teri next earnings.
+    </p>
+    <a href="https://resultmonetisation3314.netlify.app/" target="_blank" class="cta-btn-big">
+      🚀 &nbsp; resultmonetisation3314.netlify.app &nbsp; →
+    </a>
+    <p class="final-url">
+      Direct link:&nbsp;
+      <a href="https://resultmonetisation3314.netlify.app/" target="_blank">https://resultmonetisation3314.netlify.app/</a>
+    </p>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>Made with 🔥 by Yash &nbsp;·&nbsp; <a href="https://resultmonetisation3314.netlify.app/" target="_blank">resultmonetisation3314.netlify.app</a> &nbsp;·&nbsp; Apna Result, Apna Rules</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1983 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Result Monetization by Yash</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060608;
+  --surface: #0e0e16;
+  --surface2: #13131f;
+  --border: #1c1c2e;
+  --border2: #252535;
+  --accent: #7fff6e;
+  --accent2: #ff6b35;
+  --accent3: #b06bff;
+  --gold: #ffd700;
+  --silver: #c8c8d8;
+  --cyan: #00e5ff;
+  --danger: #ff4455;
+  --text: #e4e4f0;
+  --muted: #5a5a7a;
+  --muted2: #8888aa;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden;min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(127,255,110,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(127,255,110,0.02) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;}
+.page{display:none;position:relative;z-index:1;min-height:100vh;}
+.page.active{display:block;}
+
+/* LOADING OVERLAY */
+#loadingOverlay{position:fixed;inset:0;background:rgba(6,6,8,0.92);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+#loadingOverlay .spin{width:36px;height:36px;border:3px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loadingOverlay p{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted2);letter-spacing:0.1em;}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:12px 22px;font-family:'Space Mono',monospace;font-size:12px;color:var(--text);z-index:9998;transition:transform 0.3s cubic-bezier(.2,.8,.2,1);white-space:nowrap;}
+#toast.show{transform:translateX(-50%) translateY(0);}
+#toast.success{border-color:rgba(127,255,110,0.4);color:var(--accent);}
+#toast.error{border-color:rgba(255,68,85,0.4);color:var(--danger);}
+
+/* LANDING */
+#page-landing{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 20px;text-align:center;}
+.landing-orb{position:fixed;width:700px;height:700px;background:radial-gradient(circle,rgba(176,107,255,0.07) 0%,transparent 65%);top:-200px;left:50%;transform:translateX(-50%);pointer-events:none;}
+.landing-orb2{position:fixed;width:400px;height:400px;background:radial-gradient(circle,rgba(127,255,110,0.05) 0%,transparent 65%);bottom:-100px;right:-50px;pointer-events:none;}
+.site-eyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.25em;color:var(--muted2);text-transform:uppercase;margin-bottom:20px;}
+.site-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,10vw,8rem);line-height:0.9;letter-spacing:0.02em;margin-bottom:12px;}
+.site-title .line1{display:block;color:var(--text);}
+.site-title .line2{display:block;background:linear-gradient(90deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.site-title .line3{display:block;font-size:0.45em;color:var(--muted2);letter-spacing:0.15em;font-family:'Space Mono',monospace;font-weight:400;margin-top:8px;}
+.landing-desc{max-width:480px;color:var(--muted2);font-size:0.95rem;line-height:1.65;margin:20px auto 48px;}
+.landing-desc strong{color:var(--accent2);}
+.portal-choice{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;max-width:900px;width:100%;}
+@media(max-width:660px){.portal-choice{grid-template-columns:1fr;}}
+@media(max-width:900px) and (min-width:661px){.portal-choice{grid-template-columns:1fr 1fr;}}
+.choice-card{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:36px 28px;cursor:pointer;transition:all 0.35s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden;text-align:left;}
+.choice-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.35s;pointer-events:none;}
+.choice-card:hover{transform:translateY(-6px);}
+.choice-earn{border-color:#1a2a1a;}
+.choice-earn::before{background:radial-gradient(ellipse at 50% 0%,rgba(127,255,110,0.08) 0%,transparent 70%);opacity:1;}
+.choice-earn:hover{border-color:rgba(127,255,110,0.4);box-shadow:0 20px 60px rgba(127,255,110,0.08);}
+.choice-buy{border-color:#1a1a2a;}
+.choice-buy::before{background:radial-gradient(ellipse at 50% 0%,rgba(176,107,255,0.08) 0%,transparent 70%);opacity:1;}
+.choice-buy:hover{border-color:rgba(176,107,255,0.4);box-shadow:0 20px 60px rgba(176,107,255,0.08);}
+.choice-student{border-color:#1a1200;}
+.choice-student::before{background:radial-gradient(ellipse at 50% 0%,rgba(255,215,0,0.08) 0%,transparent 70%);opacity:1;}
+.choice-student:hover{border-color:rgba(255,215,0,0.4);box-shadow:0 20px 60px rgba(255,215,0,0.08);}
+.choice-emoji{font-size:2.8rem;margin-bottom:16px;display:block;}
+.choice-title{font-size:1.4rem;font-weight:800;margin-bottom:8px;}
+.choice-earn .choice-title{color:var(--accent);}
+.choice-buy .choice-title{color:var(--accent3);}
+.choice-student .choice-title{color:var(--gold);}
+.choice-desc{font-size:13px;color:var(--muted2);line-height:1.6;}
+.choice-cta{display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.05em;padding:10px 18px;border-radius:8px;border:1px solid;transition:all 0.2s;}
+.choice-earn .choice-cta{color:var(--accent);border-color:rgba(127,255,110,0.3);background:rgba(127,255,110,0.05);}
+.choice-earn:hover .choice-cta{background:rgba(127,255,110,0.12);}
+.choice-buy .choice-cta{color:var(--accent3);border-color:rgba(176,107,255,0.3);background:rgba(176,107,255,0.05);}
+.choice-buy:hover .choice-cta{background:rgba(176,107,255,0.12);}
+.choice-student .choice-cta{color:var(--gold);border-color:rgba(255,215,0,0.3);background:rgba(255,215,0,0.05);}
+.choice-student:hover .choice-cta{background:rgba(255,215,0,0.12);}
+.landing-footer-note{margin-top:40px;font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.08em;}
+
+/* SHARED NAV */
+.topnav{position:sticky;top:0;z-index:100;background:rgba(6,6,8,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+.nav-brand{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.05em;background:linear-gradient(90deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.nav-back{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted2);background:var(--surface2);border:1px solid var(--border2);padding:6px 14px;border-radius:6px;cursor:pointer;transition:all 0.2s;letter-spacing:0.05em;}
+.nav-back:hover{color:var(--text);border-color:var(--muted);}
+.nav-tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;padding:4px 10px;border-radius:100px;}
+.nav-tag-earn{background:rgba(127,255,110,0.1);color:var(--accent);border:1px solid rgba(127,255,110,0.2);}
+.nav-tag-buy{background:rgba(176,107,255,0.1);color:var(--accent3);border:1px solid rgba(176,107,255,0.2);}
+.nav-tag-student{background:rgba(255,215,0,0.1);color:var(--gold);border:1px solid rgba(255,215,0,0.2);}
+.nav-right{display:flex;align-items:center;gap:10px;}
+
+/* EARN PAGE */
+.earn-hero{padding:60px 24px 40px;max-width:860px;margin:0 auto;}
+.earn-hero h1{font-size:clamp(2rem,5vw,3.2rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:10px;}
+.earn-hero h1 span{color:var(--accent);}
+.earn-hero p{color:var(--muted2);font-size:0.95rem;line-height:1.65;max-width:500px;}
+.earn-form-wrap{max-width:860px;margin:0 auto;padding:0 24px 80px;}
+.form-section{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:32px;margin-bottom:20px;}
+.form-section-title{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.15em;color:var(--muted2);text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:10px;}
+.form-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:600px){.form-row{grid-template-columns:1fr;}}
+.form-group{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;}
+.form-group:last-child{margin-bottom:0;}
+label{font-size:12px;color:var(--muted2);font-family:'Space Mono',monospace;letter-spacing:0.05em;}
+input[type=text],input[type=number],input[type=password],textarea,select{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;color:var(--text);font-family:'Syne',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s;width:100%;}
+input[type=text]:focus,input[type=number]:focus,input[type=password]:focus,textarea:focus,select:focus{border-color:rgba(127,255,110,0.4);}
+textarea{resize:vertical;min-height:80px;}
+select option{background:var(--surface2);}
+.upload-zone{border:2px dashed var(--border2);border-radius:12px;padding:36px 20px;text-align:center;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;}
+.upload-zone:hover{border-color:rgba(127,255,110,0.5);background:rgba(127,255,110,0.03);}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-icon{font-size:2rem;margin-bottom:10px;}
+.upload-label{font-size:13px;color:var(--muted2);}
+.upload-label strong{color:var(--accent);}
+.upload-preview{display:none;margin-top:16px;border-radius:10px;overflow:hidden;border:1px solid var(--border2);}
+.upload-preview img{width:100%;max-height:200px;object-fit:contain;background:var(--surface2);}
+.upload-preview-name{font-family:'Space Mono',monospace;font-size:11px;color:var(--accent);padding:8px 12px;background:rgba(127,255,110,0.06);}
+.qr-tabs{display:flex;gap:8px;margin-bottom:16px;}
+.qr-tab{font-family:'Space Mono',monospace;font-size:11px;padding:7px 16px;border-radius:7px;border:1px solid var(--border2);color:var(--muted2);cursor:pointer;transition:all 0.2s;background:transparent;}
+.qr-tab.active{border-color:rgba(127,255,110,0.4);color:var(--accent);background:rgba(127,255,110,0.07);}
+.qr-panel{display:none;}
+.qr-panel.active{display:block;}
+.tier-config{display:flex;flex-direction:column;gap:12px;}
+.tier-row{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.tier-row-badge{font-family:'Space Mono',monospace;font-size:10px;padding:4px 10px;border-radius:6px;letter-spacing:0.08em;white-space:nowrap;}
+.badge-poor{background:rgba(100,100,100,0.08);color:#888;border:1px solid rgba(100,100,100,0.2);}
+.badge-bronze{background:rgba(205,127,50,0.12);color:#cd7f32;border:1px solid rgba(205,127,50,0.3);}
+.badge-free{background:rgba(127,255,110,0.08);color:var(--accent);border:1px solid rgba(127,255,110,0.2);}
+.badge-silver{background:rgba(200,200,216,0.08);color:var(--silver);border:1px solid rgba(200,200,216,0.2);}
+.badge-gold{background:rgba(255,215,0,0.08);color:var(--gold);border:1px solid rgba(255,215,0,0.2);}
+.badge-ultra{background:rgba(176,107,255,0.08);color:var(--accent3);border:1px solid rgba(176,107,255,0.2);}
+/* Teaser / blur locked */
+.teaser-locked{position:relative;overflow:hidden;border-radius:10px;}
+.teaser-locked .teaser-inner{filter:blur(5px);pointer-events:none;user-select:none;}
+.teaser-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(6,6,8,0.55);backdrop-filter:blur(2px);border-radius:10px;gap:6px;}
+.teaser-overlay-text{font-family:'Space Mono',monospace;font-size:11px;color:var(--text);text-align:center;padding:0 12px;line-height:1.6;}
+.tier-hook{font-family:'Space Mono',monospace;font-size:11px;color:var(--accent2);background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.2);border-radius:8px;padding:12px 16px;margin-top:16px;text-align:center;line-height:1.6;}
+.desi-card{background:linear-gradient(135deg,rgba(255,215,0,0.05),rgba(255,107,53,0.03));border:1px solid rgba(255,215,0,0.15);border-radius:12px;padding:18px;margin-bottom:12px;}
+.desi-card-icon{font-size:1.8rem;margin-bottom:6px;}
+.desi-card-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-bottom:4px;}
+.desi-card-value{font-size:1rem;font-weight:700;color:var(--text);line-height:1.4;}
+.desi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:16px;}
+.passfail-big{text-align:center;padding:28px;border-radius:14px;margin-bottom:16px;}
+.passfail-pass{background:rgba(127,255,110,0.07);border:1px solid rgba(127,255,110,0.25);}
+.passfail-fail{background:rgba(255,68,85,0.07);border:1px solid rgba(255,68,85,0.25);}
+.passfail-comp{background:rgba(255,107,53,0.07);border:1px solid rgba(255,107,53,0.25);}
+.passfail-emoji{font-size:3rem;margin-bottom:8px;}
+.passfail-text{font-size:1.5rem;font-weight:800;}
+.passfail-pass .passfail-text{color:var(--accent);}
+.passfail-fail .passfail-text{color:var(--danger);}
+.passfail-comp .passfail-text{color:var(--accent2);}
+/* Bronze tier card */
+.tc-bronze{border-color:rgba(205,127,50,0.2);background:linear-gradient(150deg,#0e0e16,#0d0900);}
+.tc-bronze:hover{border-color:rgba(205,127,50,0.5);}
+.tc-bronze .tc-btn,.tc-bronze .tc-name,.tc-bronze .tc-price{color:#cd7f32;}
+.tc-bronze .tc-btn{border-color:rgba(205,127,50,0.3);}
+.tc-bronze .tc-btn:hover{background:rgba(205,127,50,0.1);}
+/* Poor tier card */
+.tc-poor{border-color:#1a1a1a;}
+.tc-poor:hover{border-color:#333;}
+.tc-poor .tc-btn,.tc-poor .tc-name,.tc-poor .tc-price{color:#888;}
+.tc-poor .tc-btn{border-color:rgba(100,100,100,0.3);}
+/* Gold section subsection */
+.gold-section-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;margin:20px 0 12px;opacity:0.7;}
+.tier-row-desc{flex:1;font-size:12px;color:var(--muted2);}
+.tier-row input[type=number]{width:90px;text-align:center;flex-shrink:0;}
+.comment-price-grid{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;}
+.comment-price-label{font-size:13px;color:var(--text);}
+.comment-price-label small{display:block;font-size:11px;color:var(--muted);margin-top:2px;font-family:'Space Mono',monospace;}
+.comment-range-wrap{display:flex;align-items:center;gap:10px;}
+.comment-range-val{font-family:'Space Mono',monospace;font-size:13px;color:var(--accent2);width:48px;text-align:right;}
+input[type=range]{-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:var(--border2);outline:none;cursor:pointer;width:120px;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent2);cursor:pointer;}
+.publish-btn{width:100%;padding:16px;background:linear-gradient(90deg,rgba(127,255,110,0.15),rgba(0,229,255,0.12));border:1px solid rgba(127,255,110,0.3);border-radius:12px;color:var(--accent);font-family:'Space Mono',monospace;font-size:13px;font-weight:700;letter-spacing:0.08em;cursor:pointer;transition:all 0.3s;margin-top:8px;}
+.publish-btn:hover{background:linear-gradient(90deg,rgba(127,255,110,0.25),rgba(0,229,255,0.2));box-shadow:0 8px 30px rgba(127,255,110,0.1);}
+.publish-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.success-box{display:none;background:rgba(127,255,110,0.05);border:1px solid rgba(127,255,110,0.25);border-radius:16px;padding:32px;text-align:center;margin-top:20px;}
+.success-box h3{color:var(--accent);font-size:1.4rem;margin-bottom:8px;}
+.success-box p{color:var(--muted2);font-size:13px;}
+.success-link{display:inline-block;margin-top:16px;font-family:'Space Mono',monospace;font-size:12px;color:var(--cyan);background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.2);padding:10px 20px;border-radius:8px;cursor:pointer;}
+
+/* STUDENT DASHBOARD */
+.student-login-wrap{max-width:400px;margin:0 auto;padding:80px 24px;}
+.student-login-card{background:var(--surface);border:1px solid rgba(255,215,0,0.2);border-radius:20px;padding:40px 36px;text-align:center;}
+.student-login-icon{font-size:3rem;margin-bottom:16px;}
+.student-login-card h2{font-size:1.6rem;font-weight:800;color:var(--gold);margin-bottom:8px;}
+.student-login-card p{font-size:13px;color:var(--muted2);margin-bottom:28px;}
+.login-error{color:var(--danger);font-family:'Space Mono',monospace;font-size:11px;margin-top:10px;display:none;}
+.login-btn{width:100%;padding:14px;background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.3);border-radius:10px;color:var(--gold);font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:0.08em;cursor:pointer;transition:all 0.2s;margin-top:14px;}
+.login-btn:hover{background:rgba(255,215,0,0.18);}
+.login-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.student-dash{max-width:960px;margin:0 auto;padding:40px 24px 80px;}
+.dash-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px;flex-wrap:wrap;gap:10px;}
+.dash-title{font-size:1.8rem;font-weight:800;}
+.dash-title span{color:var(--gold);}
+.dash-logout{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted2);background:var(--surface2);border:1px solid var(--border2);padding:7px 14px;border-radius:7px;cursor:pointer;transition:all 0.2s;}
+.dash-logout:hover{color:var(--danger);border-color:rgba(255,68,85,0.3);}
+.dash-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:32px;}
+.stat-card{background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:20px;text-align:center;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;line-height:1;}
+.stat-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted2);letter-spacing:0.1em;margin-top:6px;}
+.stat-pending .stat-val{color:var(--accent2);}
+.stat-approved .stat-val{color:var(--accent);}
+.stat-comments .stat-val{color:var(--accent3);}
+.stat-total .stat-val{color:var(--gold);}
+.dash-section{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:28px;margin-bottom:20px;}
+.dash-section-title{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.15em;color:var(--muted2);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.dash-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.pending-count-badge{background:var(--danger);color:#fff;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;padding:2px 7px;border-radius:100px;margin-left:6px;}
+.request-list{display:flex;flex-direction:column;gap:12px;}
+.request-card{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:18px;display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;}
+.req-info{flex:1;min-width:200px;}
+.req-name{font-size:1rem;font-weight:700;margin-bottom:4px;}
+.req-meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.05em;margin-bottom:8px;}
+.req-tier{display:inline-block;font-family:'Space Mono',monospace;font-size:9px;padding:3px 8px;border-radius:100px;margin-bottom:10px;}
+.req-amount{font-family:'Space Mono',monospace;font-size:13px;color:var(--gold);margin-bottom:8px;}
+.req-comment-text{font-size:13px;color:var(--muted2);font-style:italic;background:var(--bg);padding:8px 12px;border-radius:8px;border-left:3px solid var(--accent3);margin-bottom:8px;}
+.req-screenshot-thumb{width:80px;height:80px;border-radius:8px;object-fit:cover;border:1px solid var(--border2);cursor:pointer;transition:opacity 0.2s;flex-shrink:0;}
+.req-screenshot-thumb:hover{opacity:0.8;}
+.req-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.req-approve{font-family:'Space Mono',monospace;font-size:11px;padding:8px 16px;border-radius:7px;border:1px solid rgba(127,255,110,0.3);background:rgba(127,255,110,0.08);color:var(--accent);cursor:pointer;transition:all 0.2s;font-weight:700;}
+.req-approve:hover{background:rgba(127,255,110,0.18);}
+.req-reject{font-family:'Space Mono',monospace;font-size:11px;padding:8px 16px;border-radius:7px;border:1px solid rgba(255,68,85,0.3);background:rgba(255,68,85,0.06);color:var(--danger);cursor:pointer;transition:all 0.2s;font-weight:700;}
+.req-reject:hover{background:rgba(255,68,85,0.14);}
+.req-status{font-family:'Space Mono',monospace;font-size:10px;padding:4px 10px;border-radius:100px;align-self:center;}
+.status-approved{background:rgba(127,255,110,0.1);color:var(--accent);border:1px solid rgba(127,255,110,0.2);}
+.status-rejected{background:rgba(255,68,85,0.1);color:var(--danger);border:1px solid rgba(255,68,85,0.2);}
+.status-pending{background:rgba(255,107,53,0.1);color:var(--accent2);border:1px solid rgba(255,107,53,0.2);}
+.empty-queue{text-align:center;padding:40px 20px;color:var(--muted);font-family:'Space Mono',monospace;font-size:12px;}
+
+/* BUY PAGE */
+.buy-page-inner{max-width:900px;margin:0 auto;padding:0 20px 80px;}
+.profile-list-header{padding:48px 0 24px;}
+.profile-list-header h1{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-0.02em;margin-bottom:8px;}
+.profile-list-header h1 span{color:var(--accent3);}
+.profile-list-header p{color:var(--muted2);font-size:0.9rem;}
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.profile-card{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:24px;cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;}
+.profile-card:hover{transform:translateY(-4px);border-color:rgba(176,107,255,0.35);box-shadow:0 16px 50px rgba(176,107,255,0.08);}
+.profile-avatar{width:52px;height:52px;border-radius:12px;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:14px;}
+.profile-name{font-size:1.1rem;font-weight:700;margin-bottom:4px;}
+.profile-class{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;margin-bottom:12px;}
+.profile-tiers{display:flex;gap:6px;flex-wrap:wrap;}
+.profile-tier-pill{font-family:'Space Mono',monospace;font-size:9px;padding:3px 8px;border-radius:100px;letter-spacing:0.05em;}
+.empty-state{text-align:center;padding:80px 20px;color:var(--muted);}
+.empty-state-icon{font-size:3rem;margin-bottom:16px;}
+.empty-state-text{font-size:14px;line-height:1.6;}
+/* SEARCH */
+.search-wrap{position:relative;display:flex;align-items:center;margin-top:20px;max-width:480px;}
+.search-icon{position:absolute;left:14px;font-size:16px;pointer-events:none;z-index:1;}
+.search-input{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:12px 44px 12px 42px;color:var(--text);font-family:'Syne',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
+.search-input:focus{border-color:rgba(176,107,255,0.5);box-shadow:0 0 0 3px rgba(176,107,255,0.08);}
+.search-input::placeholder{color:var(--muted);}
+.search-clear{position:absolute;right:12px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:4px 6px;border-radius:6px;transition:color 0.2s;}
+.search-clear:hover{color:var(--text);}
+.search-count{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted2);letter-spacing:0.08em;margin-top:10px;}
+
+/* NAME GATE */
+.name-gate-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;}
+.name-gate-card{background:var(--surface);border:1px solid rgba(176,107,255,0.3);border-radius:20px;padding:48px 40px;max-width:420px;width:100%;text-align:center;}
+.name-gate-emoji{font-size:3.5rem;margin-bottom:20px;}
+.name-gate-card h2{font-size:1.5rem;font-weight:800;color:var(--accent3);margin-bottom:10px;}
+.name-gate-card p{color:var(--muted2);font-size:13px;line-height:1.65;margin-bottom:28px;}
+.name-gate-input{width:100%;background:var(--surface2);border:1px solid rgba(176,107,255,0.3);border-radius:10px;padding:14px 16px;color:var(--text);font-family:'Syne',sans-serif;font-size:15px;outline:none;text-align:center;margin-bottom:16px;}
+.name-gate-input:focus{border-color:rgba(176,107,255,0.6);}
+.name-gate-btn{width:100%;padding:14px;background:rgba(176,107,255,0.12);border:1px solid rgba(176,107,255,0.35);border-radius:10px;color:var(--accent3);font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:0.08em;cursor:pointer;transition:all 0.2s;}
+.name-gate-btn:hover{background:rgba(176,107,255,0.22);}
+
+/* RESULT VIEWER */
+.result-viewer{display:none;}
+.result-viewer.active{display:block;}
+.viewer-back{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted2);cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin:28px 0 20px;transition:color 0.2s;}
+.viewer-back:hover{color:var(--text);}
+.viewer-profile-header{display:flex;align-items:center;gap:20px;margin-bottom:32px;padding:24px;background:var(--surface);border:1px solid var(--border2);border-radius:16px;}
+.viewer-avatar{width:64px;height:64px;border-radius:14px;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;}
+.viewer-name{font-size:1.5rem;font-weight:800;margin-bottom:4px;}
+.viewer-meta{font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.05em;}
+.viewer-relative-tag{font-family:'Space Mono',monospace;font-size:11px;background:rgba(176,107,255,0.1);color:var(--accent3);border:1px solid rgba(176,107,255,0.2);padding:4px 12px;border-radius:100px;margin-left:12px;}
+.tier-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin-bottom:32px;}
+.tier-card{background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:22px;position:relative;overflow:hidden;transition:all 0.3s;}
+.tier-card:hover{transform:translateY(-3px);}
+.tc-free{border-color:#1a2a1a;}.tc-free:hover{border-color:rgba(127,255,110,0.3);}
+.tc-free .tc-btn,.tc-free .tc-name{color:var(--accent);}.tc-free .tc-btn{border-color:rgba(127,255,110,0.3);}.tc-free .tc-btn:hover{background:rgba(127,255,110,0.1);}
+.tc-silver{border-color:#252535;}.tc-silver:hover{border-color:rgba(200,200,216,0.35);}
+.tc-gold{border-color:rgba(255,215,0,0.15);background:linear-gradient(150deg,#0e0e16,#110e00);}.tc-gold:hover{border-color:rgba(255,215,0,0.45);}
+.tc-ultra{border-color:rgba(176,107,255,0.2);background:linear-gradient(150deg,#0e0e16,#0b0814);}.tc-ultra:hover{border-color:rgba(176,107,255,0.5);}
+.tc-name{font-size:1.05rem;font-weight:800;margin-bottom:4px;}
+.tc-price{font-family:'Space Mono',monospace;font-size:1.8rem;font-weight:700;margin:12px 0 4px;}
+.tc-price .cur{font-size:1rem;vertical-align:super;font-weight:400;}
+.tc-features{list-style:none;display:flex;flex-direction:column;gap:7px;margin:14px 0 18px;}
+.tc-features li{font-size:12px;color:var(--muted2);display:flex;gap:8px;}
+.tc-btn{width:100%;padding:10px;border-radius:8px;border:1px solid;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:0.05em;cursor:pointer;background:transparent;transition:all 0.2s;}
+.tc-free .tc-btn,.tc-free .tc-name{color:var(--accent);}.tc-free .tc-btn{border-color:rgba(127,255,110,0.3);}.tc-free .tc-btn:hover{background:rgba(127,255,110,0.1);}
+.tc-silver .tc-btn,.tc-silver .tc-name,.tc-silver .tc-price{color:var(--silver);}.tc-silver .tc-btn{border-color:rgba(200,200,216,0.3);}.tc-silver .tc-btn:hover{background:rgba(200,200,216,0.08);}
+.tc-gold .tc-btn,.tc-gold .tc-name,.tc-gold .tc-price{color:var(--gold);}.tc-gold .tc-btn{border-color:rgba(255,215,0,0.3);}.tc-gold .tc-btn:hover{background:rgba(255,215,0,0.1);}
+.tc-ultra .tc-btn,.tc-ultra .tc-name,.tc-ultra .tc-price{color:var(--accent3);}.tc-ultra .tc-btn{border-color:rgba(176,107,255,0.3);}.tc-ultra .tc-btn:hover{background:rgba(176,107,255,0.1);}
+.tier-unlocked-badge{position:absolute;top:10px;right:10px;font-family:'Space Mono',monospace;font-size:9px;padding:3px 8px;border-radius:100px;background:rgba(127,255,110,0.15);color:var(--accent);border:1px solid rgba(127,255,110,0.3);}
+.tier-pending-badge{position:absolute;top:10px;right:10px;font-family:'Space Mono',monospace;font-size:9px;padding:3px 8px;border-radius:100px;background:rgba(255,107,53,0.12);color:var(--accent2);border:1px solid rgba(255,107,53,0.25);}
+
+/* PAYMENT MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:200;align-items:center;justify-content:center;padding:20px;overflow-y:auto;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:36px;max-width:480px;width:100%;position:relative;animation:modalIn 0.3s ease;margin:auto;}
+@keyframes modalIn{from{opacity:0;transform:scale(0.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:8px;background:var(--surface2);border:1px solid var(--border2);color:var(--muted2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.modal-close:hover{color:var(--text);}
+.modal-title{font-size:1.3rem;font-weight:800;margin-bottom:4px;}
+.modal-sub{font-size:13px;color:var(--muted2);margin-bottom:24px;}
+.modal-steps{display:flex;gap:0;margin-bottom:24px;}
+.modal-step{flex:1;text-align:center;position:relative;}
+.modal-step::after{content:'';position:absolute;top:14px;left:50%;width:100%;height:2px;background:var(--border2);}
+.modal-step:last-child::after{display:none;}
+.modal-step-num{width:28px;height:28px;border-radius:50%;background:var(--surface2);border:2px solid var(--border2);font-family:'Space Mono',monospace;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;position:relative;z-index:1;transition:all 0.3s;}
+.modal-step.done .modal-step-num{background:var(--accent);border-color:var(--accent);color:var(--bg);}
+.modal-step.active .modal-step-num{border-color:var(--accent);color:var(--accent);}
+.modal-step-label{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.05em;}
+.modal-step.active .modal-step-label{color:var(--accent);}
+.modal-panel{display:none;}
+.modal-panel.active{display:block;}
+.upi-display{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;font-family:'Space Mono',monospace;font-size:14px;color:var(--cyan);text-align:center;margin-bottom:16px;word-break:break-all;cursor:pointer;transition:background 0.2s;}
+.upi-display:hover{background:rgba(0,229,255,0.05);}
+.upi-copy-note{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);text-align:center;margin-bottom:12px;}
+.qr-display{text-align:center;margin-bottom:16px;}
+.qr-display img{width:180px;height:180px;border-radius:12px;border:1px solid var(--border2);object-fit:contain;background:#fff;}
+.modal-note{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);line-height:1.7;margin-bottom:16px;padding:12px;background:rgba(255,107,53,0.05);border:1px solid rgba(255,107,53,0.15);border-radius:8px;}
+.modal-btn{width:100%;padding:13px;border-radius:10px;border:1px solid;font-family:'Space Mono',monospace;font-size:12px;font-weight:700;letter-spacing:0.08em;cursor:pointer;transition:all 0.2s;margin-top:8px;}
+.modal-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.modal-btn-green{background:rgba(127,255,110,0.1);border-color:rgba(127,255,110,0.3);color:var(--accent);}
+.modal-btn-green:hover:not(:disabled){background:rgba(127,255,110,0.2);}
+.modal-btn-purple{background:rgba(176,107,255,0.1);border-color:rgba(176,107,255,0.3);color:var(--accent3);}
+.modal-btn-purple:hover{background:rgba(176,107,255,0.2);}
+.screenshot-upload-zone{border:2px dashed rgba(127,255,110,0.3);border-radius:12px;padding:28px 20px;text-align:center;cursor:pointer;transition:all 0.3s;position:relative;margin-bottom:16px;}
+.screenshot-upload-zone:hover{border-color:rgba(127,255,110,0.6);background:rgba(127,255,110,0.03);}
+.screenshot-upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.screenshot-preview{width:100%;border-radius:8px;margin-top:12px;border:1px solid var(--border2);display:none;}
+.amount-display{text-align:center;margin-bottom:16px;}
+.amount-display .amt{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--gold);line-height:1;}
+.amount-display .amt-label{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;margin-top:4px;}
+.pending-status-box{background:rgba(255,107,53,0.06);border:1px solid rgba(255,107,53,0.2);border-radius:14px;padding:28px;text-align:center;margin-bottom:20px;}
+.pending-status-icon{font-size:2.5rem;margin-bottom:12px;}
+.pending-status-title{font-size:1.1rem;font-weight:700;color:var(--accent2);margin-bottom:8px;}
+.pending-status-desc{font-size:12px;color:var(--muted2);line-height:1.6;font-family:'Space Mono',monospace;}
+.rejected-status-box{background:rgba(255,68,85,0.06);border:1px solid rgba(255,68,85,0.2);border-radius:14px;padding:28px;text-align:center;margin-bottom:20px;}
+.content-area{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:28px;margin-bottom:20px;}
+.content-area-title{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.15em;color:var(--muted2);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.content-area-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.marks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}
+.mark-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;}
+.mark-subject{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.08em;margin-bottom:8px;}
+.mark-score{font-size:1.6rem;font-weight:800;line-height:1;}
+.mark-total{font-size:11px;color:var(--muted);margin-top:4px;}
+.screenshot-frame{border-radius:12px;overflow:hidden;border:1px solid var(--border2);background:var(--surface2);}
+.screenshot-frame img{width:100%;display:block;max-height:400px;object-fit:contain;}
+.locked-placeholder{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:40px;text-align:center;color:var(--muted);font-family:'Space Mono',monospace;font-size:12px;}
+.locked-placeholder .lock-icon{font-size:2rem;margin-bottom:10px;}
+.comments-section{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:28px;margin-bottom:20px;}
+.comment-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;}
+.comment-author{font-weight:700;font-size:13px;margin-bottom:4px;}
+.comment-text{font-size:13px;color:var(--muted2);line-height:1.6;}
+.comment-meta{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-top:8px;}
+.comment-write{margin-top:16px;}
+.comment-write textarea{margin-bottom:10px;}
+.comment-submit-btn{font-family:'Space Mono',monospace;font-size:11px;padding:10px 20px;border-radius:8px;border:1px solid rgba(176,107,255,0.3);background:rgba(176,107,255,0.08);color:var(--accent3);cursor:pointer;transition:all 0.2s;font-weight:700;}
+.comment-submit-btn:hover{background:rgba(176,107,255,0.18);}
+.comment-pending-note{font-family:'Space Mono',monospace;font-size:10px;color:var(--accent2);background:rgba(255,107,53,0.07);border:1px solid rgba(255,107,53,0.2);padding:10px 14px;border-radius:8px;margin-top:10px;display:none;}
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:500;align-items:center;justify-content:center;cursor:pointer;}
+.lightbox.open{display:flex;}
+.lightbox img{max-width:90vw;max-height:90vh;border-radius:10px;object-fit:contain;}
+.text-muted{color:var(--muted2);font-size:13px;}
+.inline-badge{font-family:'Space Mono',monospace;font-size:10px;padding:2px 8px;border-radius:100px;display:inline-block;}
+</style>
+<style>
+/* ============================================================
+   COVER PAGE — Aesthetic Editorial × Hinglish Wit
+   Performance: GPU-composited only (transform + opacity)
+   No animated grain, no clip-path — smooth 60fps
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap');
+
+#desi-cover {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #0c0c0a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  transition: transform 0.75s cubic-bezier(0.76, 0, 0.24, 1),
+              opacity  0.35s ease 0.45s;
+}
+#desi-cover.exit {
+  transform: translateY(-100%) translateZ(0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Static grain — SVG background, no animation */
+#desi-cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+/* Vignette */
+#desi-cover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 100% 80% at 50% 50%, transparent 40%, rgba(0,0,0,0.6) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Gold top line */
+.cover-topline {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #c9a84c 30%, #c9a84c 70%, transparent);
+  z-index: 2;
+}
+
+/* Corner marks */
+.cover-corner {
+  position: absolute;
+  width: 26px; height: 26px;
+  z-index: 2;
+  opacity: 0.35;
+}
+.cover-corner.tl { top: 22px; left: 22px; border-top: 1px solid #c9a84c; border-left: 1px solid #c9a84c; }
+.cover-corner.tr { top: 22px; right: 22px; border-top: 1px solid #c9a84c; border-right: 1px solid #c9a84c; }
+.cover-corner.bl { bottom: 22px; left: 22px; border-bottom: 1px solid #c9a84c; border-left: 1px solid #c9a84c; }
+.cover-corner.br { bottom: 22px; right: 22px; border-bottom: 1px solid #c9a84c; border-right: 1px solid #c9a84c; }
+
+/* Ambient orb — opacity only, GPU friendly */
+.cover-orb {
+  position: absolute;
+  width: 640px; height: 640px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,0.055) 0%, transparent 68%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) translateZ(0);
+  pointer-events: none;
+  z-index: 1;
+  will-change: opacity;
+  animation: orbPulse 5s ease-in-out infinite alternate;
+}
+@keyframes orbPulse {
+  from { opacity: 0.6; }
+  to   { opacity: 1; }
+}
+
+/* Main content */
+.cover-inner {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: clamp(60px, 10vh, 100px) 28px clamp(60px, 8vh, 80px);
+  max-width: 720px;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cover-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  margin-bottom: 28px;
+  will-change: opacity, transform;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.05s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+
+.cover-rule {
+  width: 36px; height: 1px;
+  background: rgba(201,168,76,0.35);
+  margin: 0 auto 28px;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.1s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+
+.cover-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3.6rem, 10vw, 7.2rem);
+  font-weight: 300;
+  line-height: 0.93;
+  letter-spacing: -0.01em;
+  color: #f0ebe0;
+  margin-bottom: 8px;
+  will-change: opacity, transform;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.15s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.cover-title em {
+  font-style: italic;
+  color: #c9a84c;
+  font-weight: 300;
+}
+
+.cover-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(1.1rem, 2.8vw, 1.55rem);
+  color: rgba(240,235,224,0.45);
+  margin-bottom: 40px;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.25s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+
+.cover-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+  margin-bottom: 44px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.36s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.cover-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  color: rgba(240,235,224,0.46);
+  border: 1px solid rgba(240,235,224,0.1);
+  border-radius: 2px;
+  padding: 7px 13px;
+  transition: color 0.25s, border-color 0.25s;
+  white-space: nowrap;
+}
+.cover-tag:hover {
+  color: #c9a84c;
+  border-color: rgba(201,168,76,0.3);
+}
+
+.cover-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11.5px;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #0c0c0a;
+  background: #c9a84c;
+  border: none;
+  padding: 15px 38px;
+  border-radius: 2px;
+  cursor: pointer;
+  box-shadow: 0 4px 28px rgba(201,168,76,0.18);
+  will-change: transform, box-shadow;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.48s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+.cover-cta:hover {
+  transform: translateY(-2px) translateZ(0);
+  box-shadow: 0 10px 44px rgba(201,168,76,0.3);
+  background: #d4b45a;
+}
+.cover-cta:active {
+  transform: translateY(0) translateZ(0);
+}
+.cta-arrow {
+  display: inline-block;
+  transition: transform 0.22s ease;
+}
+.cover-cta:hover .cta-arrow { transform: translateX(5px); }
+
+.cover-footnote {
+  position: absolute;
+  bottom: 24px;
+  left: 0; right: 0;
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: rgba(240,235,224,0.15);
+  text-transform: uppercase;
+  z-index: 2;
+  opacity: 0;
+  animation: fadeUp 0.7s 0.62s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 520px) {
+  .cover-title { font-size: clamp(2.5rem, 11vw, 3.8rem); }
+  .cover-subtitle { font-size: clamp(0.95rem, 3.2vw, 1.2rem); margin-bottom: 28px; }
+  .cover-eyebrow { margin-bottom: 20px; }
+  .cover-rule { margin-bottom: 20px; }
+  .cover-tags { gap: 7px; margin-bottom: 32px; }
+  .cover-tag { font-size: 10px; padding: 6px 11px; white-space: normal; }
+  .cover-cta { padding: 13px 26px; font-size: 10.5px; }
+}
+
+@media (max-height: 680px) {
+  .cover-eyebrow { margin-bottom: 16px; font-size: 9px; }
+  .cover-rule { margin-bottom: 16px; }
+  .cover-title { font-size: clamp(2.4rem, 8vw, 4rem); margin-bottom: 6px; }
+  .cover-subtitle { font-size: 1rem; margin-bottom: 24px; }
+  .cover-tags { margin-bottom: 28px; gap: 6px; }
+  .cover-tag { padding: 5px 10px; font-size: 9.5px; }
+  .cover-cta { padding: 12px 26px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== AESTHETIC COVER PAGE ===== -->
+<div id="desi-cover">
+
+  <div class="cover-topline"></div>
+  <div class="cover-corner tl"></div>
+  <div class="cover-corner tr"></div>
+  <div class="cover-corner bl"></div>
+  <div class="cover-corner br"></div>
+  <div class="cover-orb"></div>
+
+  <div class="cover-inner">
+
+    <div class="cover-eyebrow">Result Monetization &nbsp;·&nbsp; by Yash &nbsp;·&nbsp; Est. 2025</div>
+
+    <div class="cover-rule"></div>
+
+    <div class="cover-title">
+      Rishtedaar<br><em>Tax</em> Collection
+    </div>
+
+    <div class="cover-subtitle">
+      Welle baithe the, result aate hi yaad aa gaye —<br>
+      how thoughtful of you, Chacha ji.
+    </div>
+
+    <div class="cover-tags">
+      <span class="cover-tag">Ek link, unlimited relatives</span>
+      <span class="cover-tag">Free se Ultra — tier accordingly</span>
+      <span class="cover-tag">UPI karo, screenshot do, wait karo</span>
+      <span class="cover-tag">Tum approve karo, woh dekhein</span>
+      <span class="cover-tag">Sharma ji ka beta? Uska bhi link hai 🙂</span>
+    </div>
+
+    <button class="cover-cta" onclick="dismissCover()">
+      Enter &nbsp;<span class="cta-arrow">→</span>
+    </button>
+
+  </div>
+
+  <div class="cover-footnote">All payments verified by the student &nbsp;·&nbsp; No Chacha ji were harmed</div>
+
+</div>
+
+<script>
+function dismissCover() {
+  var cover = document.getElementById('desi-cover');
+  cover.classList.add('exit');
+  setTimeout(function() {
+    cover.style.display = 'none';
+  }, 900);
+}
+</script>
+
+
+
+<!-- LOADING -->
+<div id="loadingOverlay">
+  <div class="spin"></div>
+  <p>CONNECTING TO FIREBASE…</p>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="Screenshot">
+</div>
+
+<!-- NAME GATE -->
+<div class="name-gate-overlay" id="nameGate" style="display:none;">
+  <div class="name-gate-card">
+    <div class="name-gate-emoji">👋</div>
+    <h2>Welcome!</h2>
+    <p>Please enter your name before viewing results. This helps the student identify who's requesting access.</p>
+    <input class="name-gate-input" id="relativeNameInput" type="text" placeholder="Your full name…" maxlength="50">
+    <button class="name-gate-btn" onclick="confirmRelativeName()">Continue →</button>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="paymentModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modalTitle">Unlock Access</div>
+    <div class="modal-sub" id="modalSub">Complete payment to send a request</div>
+    <div class="modal-steps">
+      <div class="modal-step active" id="mstep1"><div class="modal-step-num">1</div><div class="modal-step-label">Pay</div></div>
+      <div class="modal-step" id="mstep2"><div class="modal-step-num">2</div><div class="modal-step-label">Screenshot</div></div>
+      <div class="modal-step" id="mstep3"><div class="modal-step-num">3</div><div class="modal-step-label">Request</div></div>
+    </div>
+    <div class="modal-panel active" id="mpanel1">
+      <div class="amount-display">
+        <div class="amt" id="modalAmount">₹0</div>
+        <div class="amt-label">AMOUNT TO PAY</div>
+      </div>
+      <div class="upi-display" id="modalUpi" onclick="copyUpi()">tap to copy UPI ID</div>
+      <div class="upi-copy-note">Tap UPI ID to copy · Or scan QR below</div>
+      <div class="qr-display" id="modalQr" style="display:none;"><img id="modalQrImg" src="" alt="QR Code"></div>
+      <div class="modal-note">⚠ Pay the exact amount shown. After paying, click below to upload your payment screenshot for verification.</div>
+      <button class="modal-btn modal-btn-green" onclick="goModalStep(2)">I've Paid → Upload Screenshot</button>
+    </div>
+    <div class="modal-panel" id="mpanel2">
+      <p class="text-muted" style="margin-bottom:16px;font-size:13px;">Upload a screenshot of your payment confirmation.</p>
+      <div class="screenshot-upload-zone" id="screenshotZone">
+        <input type="file" accept="image/*" id="screenshotFile" onchange="handleScreenshot(this)">
+        <div style="font-size:2rem;margin-bottom:8px;">📸</div>
+        <div style="font-size:13px;color:var(--muted2);">Click or drag your <strong style="color:var(--accent)">payment screenshot</strong> here</div>
+      </div>
+      <img id="screenshotPreview" class="screenshot-preview" src="" alt="Preview">
+      <div class="modal-note">Make sure the screenshot clearly shows the amount, UPI transaction ID, and date.</div>
+      <button class="modal-btn modal-btn-green" id="sendRequestBtn" onclick="sendRequest()" style="display:none;">Send Verification Request →</button>
+      <button class="modal-btn modal-btn-purple" onclick="goModalStep(1)" style="margin-top:8px;">← Back</button>
+    </div>
+    <div class="modal-panel" id="mpanel3">
+      <div style="text-align:center;padding:20px 0;">
+        <div style="font-size:4rem;margin-bottom:16px;">🚀</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--accent);margin-bottom:10px;">Request Sent!</div>
+        <p style="color:var(--muted2);font-size:13px;line-height:1.7;">Your payment screenshot has been sent to the student for verification. Once approved, your access will activate automatically.</p>
+        <div style="margin-top:20px;font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);background:var(--surface2);border:1px solid var(--border2);padding:12px;border-radius:8px;">Status updates appear live — no need to refresh!</div>
+        <button class="modal-btn modal-btn-green" style="margin-top:20px;" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LANDING -->
+<div class="page active" id="page-landing">
+  <div class="landing-orb"></div>
+  <div class="landing-orb2"></div>
+  <div class="site-eyebrow">Result Monetization Platform</div>
+  <div class="site-title">
+    <span class="line1">RESULT</span>
+    <span class="line2">MONETIZE</span>
+    <span class="line3">by Yash · Share · Earn · Control</span>
+  </div>
+  <p class="landing-desc">Share your results with family. <strong>Earn from relatives</strong> who want to see your detailed scores, analysis, and more — all verified by you.</p>
+  <div class="portal-choice">
+    <div class="choice-card choice-earn" onclick="showPage('page-earn')">
+      <span class="choice-emoji">📤</span>
+      <div class="choice-title">Upload Result</div>
+      <p class="choice-desc">Upload your marksheet, configure tiers, set your UPI and start earning from relatives.</p>
+      <span class="choice-cta">Start Uploading →</span>
+    </div>
+    <div class="choice-card choice-buy" onclick="enterRelativePortal()">
+      <span class="choice-emoji">👨‍👩‍👧</span>
+      <div class="choice-title">View Results</div>
+      <p class="choice-desc">Browse and unlock student results. Pay via UPI and get verified access instantly.</p>
+      <span class="choice-cta">Browse Results →</span>
+    </div>
+    <div class="choice-card choice-student" onclick="showPage('page-student-login')">
+      <span class="choice-emoji">🎓</span>
+      <div class="choice-title">Student Dashboard</div>
+      <p class="choice-desc">Review payment requests, approve or reject access, manage comments and track earnings.</p>
+      <span class="choice-cta">Dashboard →</span>
+    </div>
+  </div>
+  <div class="landing-footer-note">All payments verified manually by the student · Powered by Firebase · Live sync</div>
+</div>
+
+<!-- EARN PAGE -->
+<div class="page" id="page-earn">
+  <nav class="topnav">
+    <div class="nav-brand">ResultMon</div>
+    <div class="nav-right">
+      <span class="nav-tag nav-tag-earn">UPLOAD MODE</span>
+      <button class="nav-back" onclick="showPage('page-landing')">← Home</button>
+    </div>
+  </nav>
+  <div class="earn-hero">
+    <h1>Upload Your <span>Result</span></h1>
+    <p>Fill in your details, configure tiers, and set your UPI. Relatives pay → you approve → they see the content. All synced live via Firebase.</p>
+  </div>
+  <div class="earn-form-wrap">
+    <div class="form-section">
+      <div class="form-section-title">Basic Information</div>
+      <div class="form-row">
+        <div class="form-group"><label>Student Name</label><input type="text" id="e_name" placeholder="Your full name"></div>
+        <div class="form-group"><label>Class / Exam</label><input type="text" id="e_class" placeholder="e.g. Class 10 CBSE 2025"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Emoji Avatar</label><input type="text" id="e_avatar" placeholder="🎓" maxlength="4"></div>
+        <div class="form-group"><label>Dashboard Password</label><input type="password" id="e_password" placeholder="Set a password for your dashboard"></div>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Subject Marks (Bronze+ Preview)</div>
+      <div id="marksContainer">
+        <div class="form-row marks-row">
+          <div class="form-group"><label>Subject</label><input type="text" placeholder="Mathematics" class="mark-subj"></div>
+          <div class="form-group"><label>Score / Total</label><div style="display:flex;gap:8px;align-items:center;"><input type="number" placeholder="95" class="mark-score"><span style="color:var(--muted)">/</span><input type="number" placeholder="100" class="mark-total" style="width:80px;"></div></div>
+        </div>
+      </div>
+      <button onclick="addMarkRow()" style="margin-top:8px;font-family:'Space Mono',monospace;font-size:11px;color:var(--accent);background:transparent;border:1px dashed rgba(127,255,110,0.3);padding:8px 16px;border-radius:7px;cursor:pointer;">+ Add Subject</button>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Result Screenshot (Silver+ Unlock)</div>
+      <div class="upload-zone" id="ssZone">
+        <input type="file" accept="image/*" onchange="handleUpload(this,'ssPreview','ssPreviewWrap','ssName')">
+        <div class="upload-icon">🖼️</div>
+        <div class="upload-label">Drop your <strong>marksheet screenshot</strong> here or click to browse</div>
+      </div>
+      <div class="upload-preview" id="ssPreviewWrap"><img id="ssPreview" src="" alt=""><div class="upload-preview-name" id="ssName"></div></div>
+    </div>
+    <div class="form-section" style="border-color:rgba(200,200,216,0.2);">
+      <div class="form-section-title" style="color:var(--silver);">🥈 Silver Tier Details — Pass/Fail Reveal</div>
+      <div class="form-group">
+        <label>Beta Pass hua ya Fail? 🎯</label>
+        <select id="e_passfail">
+          <option value="">— Select Result Status —</option>
+          <option value="pass">✅ Pass — Nikal gaya beta!</option>
+          <option value="fail">❌ Fail — Thoda aur mehnat chahiye</option>
+          <option value="compartment">⚠️ Compartment — Ek subject mein phas gaya</option>
+        </select>
+        <small style="color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;margin-top:4px;">Shown as a big dramatic reveal in Silver tier 🎭</small>
+      </div>
+    </div>
+    <div class="form-section" style="border-color:rgba(255,215,0,0.2);">
+      <div class="form-section-title" style="color:var(--gold);">🥇 Gold Tier Details — Desi Family Special</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Beta Aage Kya Banna Chahta Hai? 🎯</label>
+          <select id="e_career">
+            <option value="">— Career Goal —</option>
+            <option value="doctor">🏥 Doctor — MBBS dream hai!</option>
+            <option value="engineer">⚙️ Engineer — IIT/NIT target hai</option>
+            <option value="commerce">📊 Commerce — CA/MBA ki taraf</option>
+            <option value="arts">🎨 Arts/Humanities — Creative field</option>
+            <option value="government">🏛️ Government Job — Sarkari naukri</option>
+            <option value="undecided">🤷 Abhi Decide Nahi Kiya — Relatives, suggestions welcome!</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>NEET / JEE Dega Beta? 🔬</label>
+          <select id="e_neetjee">
+            <option value="">— Entrance Exam Plan —</option>
+            <option value="neet">💉 Haan, NEET de raha hai</option>
+            <option value="jee">🔧 Haan, JEE de raha hai</option>
+            <option value="both">🎯 Dono de raha hai (ambitious!)</option>
+            <option value="gave_rank">🏆 Diya tha, rank bhi aaya!</option>
+            <option value="no">🙅 Nahi de raha — alag field hai</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Boards Repeat Karega Beta? 📋</label>
+          <select id="e_boardsrepeat">
+            <option value="">— Boards Plan —</option>
+            <option value="no">💪 Nahi — Ek baar mein nikal liya!</option>
+            <option value="yes">📚 Haan, repeat karega improvement ke liye</option>
+            <option value="considering">🤔 Soch raha hai abhi</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Personal Note to Family (Optional) 💌</label>
+          <input type="text" id="e_note" placeholder="e.g. Aashirwaad lena chahta hoon sabka!">
+        </div>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Payment Details</div>
+      <div class="form-group"><label>UPI ID</label><input type="text" id="e_upi" placeholder="yourname@paytm or 9876543210@upi"></div>
+      <div class="form-group">
+        <label>QR Code (optional)</label>
+        <div class="qr-tabs">
+          <span class="qr-tab active" onclick="switchQrTab(this,'qrUpload')">Upload QR</span>
+          <span class="qr-tab" onclick="switchQrTab(this,'qrUrl')">Image URL</span>
+        </div>
+        <div class="qr-panel active" id="qrUpload">
+          <div class="upload-zone">
+            <input type="file" accept="image/*" onchange="handleUpload(this,'qrPreview','qrPreviewWrap','qrName')">
+            <div class="upload-icon">📱</div>
+            <div class="upload-label">Upload your <strong>UPI QR</strong> image</div>
+          </div>
+          <div class="upload-preview" id="qrPreviewWrap"><img id="qrPreview" src="" alt=""><div class="upload-preview-name" id="qrName"></div></div>
+        </div>
+        <div class="qr-panel" id="qrUrl"><input type="text" id="e_qrUrl" placeholder="https://... (direct image URL)"></div>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Tier Pricing</div>
+      <div class="tier-config">
+        <div class="tier-row"><span class="tier-row-badge badge-poor">POOR (FREE)</span><div class="tier-row-desc">Only subject names — no marks. Blurred teaser with "Beta ne X subjects liye hain 👀". Maximum curiosity, zero info.</div><span style="font-family:'Space Mono',monospace;font-size:12px;color:#888;">₹0</span></div>
+        <div class="tier-row"><span class="tier-row-badge badge-bronze">BRONZE</span><div class="tier-row-desc">Marks per subject — but no pass/fail, no screenshot. Leaves relatives guessing "Pass hua ki nahi? 🤔"</div><input type="number" id="price_bronze" placeholder="29" min="1"></div>
+        <div class="tier-row"><span class="tier-row-badge badge-silver">SILVER</span><div class="tier-row-desc">Full result screenshot + big Pass/Fail reveal. Most tempting upgrade — "Dekho toh sahi! 😱"</div><input type="number" id="price_silver" placeholder="69" min="1"></div>
+        <div class="tier-row"><span class="tier-row-badge badge-gold">GOLD</span><div class="tier-row-desc">Everything + desi analysis: percentage, grade, career goal, NEET/JEE plan, boards repeat? Full family gossip package 🎉</div><input type="number" id="price_gold" placeholder="99" min="1"></div>
+        <div class="tier-row"><span class="tier-row-badge badge-ultra">ULTRA</span><div class="tier-row-desc">Everything + relatives can leave a comment. Premium bragging rights for the whole family! 👑</div><input type="number" id="price_ultra" placeholder="149" min="1"></div>
+      </div>
+    </div>
+    <div class="form-section">
+      <div class="form-section-title">Comment Settings</div>
+      <div class="comment-price-grid">
+        <div class="comment-price-label">Comment Fee (Ultra Tier)<small>Charged per comment attempt, verified by you</small></div>
+        <div class="comment-range-wrap">
+          <input type="range" min="0" max="200" value="50" id="commentRange" oninput="document.getElementById('commentVal').textContent='₹'+this.value">
+          <span class="comment-range-val" id="commentVal">₹50</span>
+        </div>
+      </div>
+    </div>
+    <button class="publish-btn" id="publishBtn" onclick="publishProfile()">🚀 Publish Result Profile</button>
+    <div class="success-box" id="publishSuccess">
+      <h3>🎉 Profile Published!</h3>
+      <p>Your result is now live on Firebase. Relatives can find and unlock it via the View Results portal — from any device!</p>
+      <span class="success-link" onclick="showPage('page-landing')">← Back to Home</span>
+    </div>
+  </div>
+</div>
+
+<!-- STUDENT LOGIN -->
+<div class="page" id="page-student-login">
+  <nav class="topnav">
+    <div class="nav-brand">ResultMon</div>
+    <div class="nav-right">
+      <span class="nav-tag nav-tag-student">STUDENT</span>
+      <button class="nav-back" onclick="showPage('page-landing')">← Home</button>
+    </div>
+  </nav>
+  <div class="student-login-wrap">
+    <div class="student-login-card">
+      <div class="student-login-icon">🔐</div>
+      <h2>Student Dashboard</h2>
+      <p>Enter your dashboard password to review payment requests and manage your result profile.</p>
+      <div class="form-group"><label>Dashboard Password</label><input type="password" id="dashPassword" placeholder="Your password…" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="login-error" id="loginError">❌ Incorrect password. Try again.</div>
+      <button class="login-btn" id="loginBtn" onclick="doLogin()">Enter Dashboard →</button>
+    </div>
+  </div>
+</div>
+
+<!-- STUDENT DASHBOARD MAIN -->
+<div class="page" id="page-student-dash">
+  <nav class="topnav">
+    <div class="nav-brand">ResultMon</div>
+    <div class="nav-right">
+      <span class="nav-tag nav-tag-student">DASHBOARD</span>
+      <button class="nav-back dash-logout" onclick="logoutStudent()">Logout</button>
+    </div>
+  </nav>
+  <div class="student-dash">
+    <div class="dash-header">
+      <div>
+        <div class="dash-title">Welcome back, <span id="dashStudentName">Student</span></div>
+        <div style="font-family:'Space Mono',monospace;font-size:11px;color:var(--muted);margin-top:4px;">🔴 Live — updates in real time</div>
+      </div>
+    </div>
+    <div class="dash-stats">
+      <div class="stat-card stat-pending"><div class="stat-val" id="statPending">0</div><div class="stat-label">PENDING</div></div>
+      <div class="stat-card stat-approved"><div class="stat-val" id="statApproved">0</div><div class="stat-label">APPROVED</div></div>
+      <div class="stat-card stat-comments"><div class="stat-val" id="statComments">0</div><div class="stat-label">PENDING COMMENTS</div></div>
+      <div class="stat-card stat-total"><div class="stat-val" id="statEarned">₹0</div><div class="stat-label">EST. EARNED</div></div>
+    </div>
+    <div class="dash-section">
+      <div class="dash-section-title">Payment Requests <span class="pending-count-badge" id="payReqBadge" style="display:none;">0</span></div>
+      <div class="request-list" id="payRequestList"><div class="empty-queue">No payment requests yet.</div></div>
+    </div>
+    <div class="dash-section">
+      <div class="dash-section-title">Comment Requests <span class="pending-count-badge" id="commentReqBadge" style="display:none;">0</span></div>
+      <div class="request-list" id="commentRequestList"><div class="empty-queue">No comment requests yet.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- BUY PAGE -->
+<div class="page" id="page-buy">
+  <nav class="topnav">
+    <div class="nav-brand">ResultMon</div>
+    <div class="nav-right">
+      <span class="nav-tag nav-tag-buy">RELATIVE VIEW</span>
+      <button class="nav-back" onclick="showPage('page-landing')">← Home</button>
+    </div>
+  </nav>
+  <div class="buy-page-inner">
+    <div id="profileListView">
+      <div class="profile-list-header">
+        <h1>Browse <span>Results</span></h1>
+        <p>Select a student to view and unlock their results.</p>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="profileSearch" class="search-input" placeholder="Search by name, class, exam…" oninput="filterProfiles(this.value)">
+          <button class="search-clear" id="searchClear" onclick="clearSearch()" style="display:none;">✕</button>
+        </div>
+        <div class="search-count" id="searchCount" style="display:none;"></div>
+      </div>
+      <div class="profile-grid" id="profileGrid">
+        <div class="empty-state"><div class="empty-state-icon">📭</div><div class="empty-state-text">Loading results…</div></div>
+      </div>
+    </div>
+    <div class="result-viewer" id="resultViewer">
+      <span class="viewer-back" onclick="backToList()">← Back to Results</span>
+      <div class="viewer-profile-header" id="viewerHeader"></div>
+      <div class="tier-cards" id="tierCardsContainer"></div>
+      <div id="contentSections"></div>
+      <div class="comments-section" id="commentsSection">
+        <div class="content-area-title">Comments</div>
+        <div id="commentsList"></div>
+        <div class="comment-write" id="commentWriteArea" style="display:none;">
+          <textarea id="commentText" placeholder="Write your comment here…" rows="3"></textarea>
+          <button class="comment-submit-btn" onclick="submitComment()">Send for Approval →</button>
+          <div class="comment-pending-note" id="commentPendingNote">✅ Comment sent for student approval. It will appear once approved.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDK (compat) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<!-- Firebase Storage not needed — images stored as base64 in Realtime Database -->
+
+<script>
+// ============================
+// FIREBASE INIT
+// ============================
+const firebaseConfig = {
+  apiKey: "AIzaSyCCPKjK4oGtCnDuAxB_7KiHHS_jQnKb5nE",
+  authDomain: "result-monetization-4d4cb.firebaseapp.com",
+  databaseURL: "https://result-monetization-4d4cb-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "result-monetization-4d4cb",
+  storageBucket: "result-monetization-4d4cb.firebasestorage.app",
+  messagingSenderId: "924177076833",
+  appId: "1:924177076833:web:5e1f5a189fb1ea9a239020"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ============================
+// STATE
+// ============================
+let state = {
+  relativeName: null,
+  currentProfile: null,
+  loggedInStudentId: null,
+  screenshotDataUrl: null,
+  currentModal: { tier: null, profile: null, amount: 0 },
+  // Live listeners
+  _dashListeners: [],
+  _viewerPayListener: null,
+  _viewerComListener: null
+};
+
+// ============================
+// TOAST
+// ============================
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show ' + type;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.className = '', 3000);
+}
+
+// ============================
+// LOADING
+// ============================
+function hideLoading() {
+  document.getElementById('loadingOverlay').style.display = 'none';
+}
+
+// Test DB connection
+db.ref('.info/connected').on('value', snap => {
+  if (snap.val() === true) hideLoading();
+});
+// Fallback hide after 3s
+setTimeout(hideLoading, 3000);
+
+// ============================
+// NAVIGATION
+// ============================
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ============================
+// RELATIVE NAME GATE
+// ============================
+function enterRelativePortal() {
+  if (state.relativeName) {
+    showPage('page-buy');
+    renderProfileGrid();
+  } else {
+    document.getElementById('nameGate').style.display = 'flex';
+  }
+}
+function confirmRelativeName() {
+  const val = document.getElementById('relativeNameInput').value.trim();
+  if (!val) { showToast('Please enter your name!', 'error'); return; }
+  state.relativeName = val;
+  document.getElementById('nameGate').style.display = 'none';
+  showPage('page-buy');
+  renderProfileGrid();
+}
+
+// ============================
+// EARN PAGE HELPERS
+// ============================
+let ssDataUrl = null, qrDataUrl = null;
+
+function addMarkRow() {
+  const c = document.getElementById('marksContainer');
+  const d = document.createElement('div');
+  d.className = 'form-row marks-row';
+  d.innerHTML = `<div class="form-group"><label>Subject</label><input type="text" placeholder="Subject" class="mark-subj"></div>
+    <div class="form-group"><label>Score / Total</label><div style="display:flex;gap:8px;align-items:center;"><input type="number" placeholder="Score" class="mark-score"><span style="color:var(--muted)">/</span><input type="number" placeholder="100" class="mark-total" style="width:80px;"></div></div>`;
+  c.appendChild(d);
+}
+
+function handleUpload(input, previewId, wrapId, nameId) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById(previewId).src = e.target.result;
+    document.getElementById(wrapId).style.display = 'block';
+    document.getElementById(nameId).textContent = file.name;
+    if (previewId === 'ssPreview') ssDataUrl = e.target.result;
+    if (previewId === 'qrPreview') qrDataUrl = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function switchQrTab(el, panel) {
+  document.querySelectorAll('.qr-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.qr-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(panel).classList.add('active');
+}
+
+// ============================
+// COMPRESS IMAGE → base64 (no Storage needed)
+// maxSize: max dimension in px, quality: 0–1 JPEG
+// ============================
+function compressImage(dataUrl, maxSize = 800, quality = 0.7) {
+  return new Promise((resolve, reject) => {
+    if (!dataUrl) { resolve(null); return; }
+    const img = new Image();
+    img.onload = () => {
+      let { width, height } = img;
+      if (width > maxSize || height > maxSize) {
+        if (width > height) { height = Math.round(height * maxSize / width); width = maxSize; }
+        else { width = Math.round(width * maxSize / height); height = maxSize; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      resolve(canvas.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = reject;
+    img.src = dataUrl;
+  });
+}
+
+// ============================
+// PUBLISH PROFILE → FIREBASE
+// ============================
+async function publishProfile() {
+  const name = document.getElementById('e_name').value.trim();
+  const cls = document.getElementById('e_class').value.trim();
+  const avatar = document.getElementById('e_avatar').value.trim() || '🎓';
+  const upi = document.getElementById('e_upi').value.trim();
+  const password = document.getElementById('e_password').value.trim();
+  const pBronze = parseInt(document.getElementById('price_bronze').value) || 29;
+  const pSilver = parseInt(document.getElementById('price_silver').value) || 69;
+  const pGold = parseInt(document.getElementById('price_gold').value) || 99;
+  const pUltra = parseInt(document.getElementById('price_ultra').value) || 149;
+  const commentFee = parseInt(document.getElementById('commentRange').value) || 50;
+  const passfail = document.getElementById('e_passfail').value || '';
+  const career = document.getElementById('e_career').value || '';
+  const neetjee = document.getElementById('e_neetjee').value || '';
+  const boardsrepeat = document.getElementById('e_boardsrepeat').value || '';
+  const personalNote = document.getElementById('e_note').value.trim() || '';
+
+  if (!name || !upi || !password) { showToast('Please fill Name, UPI ID, and Password!', 'error'); return; }
+
+  const marks = [];
+  document.querySelectorAll('.marks-row').forEach(row => {
+    const s = row.querySelector('.mark-subj')?.value.trim();
+    const sc = row.querySelector('.mark-score')?.value;
+    const tot = row.querySelector('.mark-total')?.value;
+    if (s) marks.push({ subject: s, score: sc || '?', total: tot || '100' });
+  });
+
+  const btn = document.getElementById('publishBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Publishing…';
+
+  try {
+    const profileId = 'p_' + Date.now();
+
+    // Compress images and store as base64 directly in DB
+    const screenshotB64 = ssDataUrl ? await compressImage(ssDataUrl, 900, 0.72) : null;
+    let qrB64 = null;
+    if (qrDataUrl) {
+      qrB64 = await compressImage(qrDataUrl, 400, 0.8);
+    }
+    const qrUrl = qrB64 || document.getElementById('e_qrUrl').value.trim() || null;
+
+    const profile = {
+      id: profileId,
+      name, cls, avatar, upi, password,
+      pBronze, pSilver, pGold, pUltra, commentFee,
+      marks,
+      passfail, career, neetjee, boardsrepeat, personalNote,
+      screenshotUrl: screenshotB64 || null,
+      qrUrl: qrUrl || null,
+      publishedAt: Date.now()
+    };
+
+    await db.ref('profiles/' + profileId).set(profile);
+    document.getElementById('publishSuccess').style.display = 'block';
+    showToast('✅ Profile published successfully!', 'success');
+    window.scrollTo(0, document.body.scrollHeight);
+  } catch (err) {
+    showToast('❌ Error publishing: ' + err.message, 'error');
+    console.error(err);
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🚀 Publish Result Profile';
+}
+
+// ============================
+// STUDENT LOGIN
+// ============================
+async function doLogin() {
+  const pw = document.getElementById('dashPassword').value.trim();
+  if (!pw) return;
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Checking…';
+
+  try {
+    const snap = await db.ref('profiles').orderByChild('password').equalTo(pw).once('value');
+    const data = snap.val();
+    if (!data) {
+      document.getElementById('loginError').style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Enter Dashboard →';
+      return;
+    }
+    const profile = Object.values(data)[0];
+    state.loggedInStudentId = profile.id;
+    document.getElementById('loginError').style.display = 'none';
+    document.getElementById('dashPassword').value = '';
+    document.getElementById('dashStudentName').textContent = profile.name;
+    showPage('page-student-dash');
+    startDashboardListeners(profile.id, profile);
+  } catch (err) {
+    showToast('❌ Error: ' + err.message, 'error');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Enter Dashboard →';
+}
+
+function logoutStudent() {
+  // Remove listeners
+  state._dashListeners.forEach(ref => ref.off());
+  state._dashListeners = [];
+  state.loggedInStudentId = null;
+  showPage('page-landing');
+}
+
+// ============================
+// DASHBOARD LIVE LISTENERS
+// ============================
+function startDashboardListeners(studentId, profile) {
+  // Clear old listeners
+  state._dashListeners.forEach(ref => ref.off());
+  state._dashListeners = [];
+
+  const payRef = db.ref('payRequests').orderByChild('studentId').equalTo(studentId);
+  const comRef = db.ref('commentRequests').orderByChild('studentId').equalTo(studentId);
+
+  payRef.on('value', snap => {
+    const payReqs = snap.val() ? Object.values(snap.val()) : [];
+    const commentSnap = state._lastCommentSnap || [];
+    renderDashboardUI(profile, payReqs, commentSnap);
+    state._lastPaySnap = payReqs;
+  });
+  comRef.on('value', snap => {
+    const commentReqs = snap.val() ? Object.values(snap.val()) : [];
+    const paySnap = state._lastPaySnap || [];
+    renderDashboardUI(profile, paySnap, commentReqs);
+    state._lastCommentSnap = commentReqs;
+  });
+
+  state._dashListeners.push(payRef, comRef);
+}
+
+function renderDashboardUI(profile, payReqs, commentReqs) {
+  const pending = payReqs.filter(r => r.status === 'pending').length;
+  const approved = payReqs.filter(r => r.status === 'approved').length;
+  const commentPending = commentReqs.filter(r => r.status === 'pending').length;
+  const earned = payReqs.filter(r => r.status === 'approved').reduce((s, r) => s + (r.amount || 0), 0)
+               + commentReqs.filter(r => r.status === 'approved').length * (profile.commentFee || 0);
+
+  document.getElementById('statPending').textContent = pending;
+  document.getElementById('statApproved').textContent = approved;
+  document.getElementById('statComments').textContent = commentPending;
+  document.getElementById('statEarned').textContent = '₹' + earned;
+
+  const payBadge = document.getElementById('payReqBadge');
+  payBadge.textContent = pending;
+  payBadge.style.display = pending > 0 ? 'inline-block' : 'none';
+
+  const comBadge = document.getElementById('commentReqBadge');
+  comBadge.textContent = commentPending;
+  comBadge.style.display = commentPending > 0 ? 'inline-block' : 'none';
+
+  // Pay requests
+  const pList = document.getElementById('payRequestList');
+  if (payReqs.length === 0) {
+    pList.innerHTML = '<div class="empty-queue">No payment requests yet. Share your result link with relatives!</div>';
+  } else {
+    pList.innerHTML = payReqs.sort((a,b) => (b.timestamp||0) - (a.timestamp||0)).map(req => `
+      <div class="request-card" id="req_${req.id}">
+        <div class="req-info">
+          <div class="req-name">${esc(req.relativeName)}</div>
+          <div class="req-meta">${timeSince(req.timestamp)}</div>
+          <div class="req-tier"><span class="inline-badge" style="${tierBadgeStyle(req.tier)}">${(req.tier||'').toUpperCase()}</span></div>
+          <div class="req-amount">₹${req.amount}</div>
+        </div>
+        ${req.screenshotUrl
+          ? `<img src="${req.screenshotUrl}" class="req-screenshot-thumb" alt="Screenshot" onclick="openLightboxUrl('${req.screenshotUrl}')">`
+          : '<div style="width:80px;height:80px;background:var(--surface2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">🖼️</div>'}
+        <div style="display:flex;flex-direction:column;gap:6px;align-self:center;">
+          ${req.status === 'pending'
+            ? `<div class="req-actions"><button class="req-approve" onclick="resolvePayReq('${req.id}','approved')">✅ Approve</button><button class="req-reject" onclick="resolvePayReq('${req.id}','rejected')">❌ Reject</button></div>`
+            : `<span class="req-status ${req.status === 'approved' ? 'status-approved' : 'status-rejected'}">${req.status === 'approved' ? '✅ Approved' : '❌ Rejected'}</span>`}
+        </div>
+      </div>`).join('');
+  }
+
+  // Comment requests
+  const cList = document.getElementById('commentRequestList');
+  if (commentReqs.length === 0) {
+    cList.innerHTML = '<div class="empty-queue">No comment requests yet.</div>';
+  } else {
+    cList.innerHTML = commentReqs.sort((a,b) => (b.timestamp||0) - (a.timestamp||0)).map(req => `
+      <div class="request-card" id="creq_${req.id}">
+        <div class="req-info" style="flex:1;">
+          <div class="req-name">${esc(req.relativeName)}</div>
+          <div class="req-meta">${timeSince(req.timestamp)}</div>
+          <div class="req-comment-text">"${esc(req.text)}"</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;align-self:center;">
+          ${req.status === 'pending'
+            ? `<div class="req-actions"><button class="req-approve" onclick="resolveCommentReq('${req.id}','approved')">✅ Approve</button><button class="req-reject" onclick="resolveCommentReq('${req.id}','rejected')">❌ Reject</button></div>`
+            : `<span class="req-status ${req.status === 'approved' ? 'status-approved' : 'status-rejected'}">${req.status === 'approved' ? '✅ Approved' : '❌ Rejected'}</span>`}
+        </div>
+      </div>`).join('');
+  }
+}
+
+async function resolvePayReq(id, status) {
+  try {
+    await db.ref('payRequests/' + id).update({ status });
+    showToast(status === 'approved' ? '✅ Access approved!' : '❌ Request rejected', status === 'approved' ? 'success' : 'error');
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
+}
+
+async function resolveCommentReq(id, status) {
+  try {
+    await db.ref('commentRequests/' + id).update({ status });
+    showToast(status === 'approved' ? '✅ Comment approved!' : '❌ Comment rejected', status === 'approved' ? 'success' : 'error');
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
+}
+
+// ============================
+// BUY / RELATIVE PAGE
+// ============================
+let _allProfiles = [];
+
+function renderProfileGrid() {
+  const grid = document.getElementById('profileGrid');
+  grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⏳</div><div class="empty-state-text">Loading results…</div></div>';
+
+  db.ref('profiles').once('value').then(snap => {
+    const data = snap.val();
+    if (!data) {
+      _allProfiles = [];
+      grid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📭</div><div class="empty-state-text">No results published yet.<br>Ask your student to upload their result first.</div></div>`;
+      return;
+    }
+    _allProfiles = Object.values(data);
+    // Reset search
+    const searchEl = document.getElementById('profileSearch');
+    if (searchEl) searchEl.value = '';
+    document.getElementById('searchClear').style.display = 'none';
+    document.getElementById('searchCount').style.display = 'none';
+    renderFilteredProfiles(_allProfiles);
+  }).catch(err => {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-state-text">Error loading. Check Firebase rules.</div></div>';
+    showToast('DB error: ' + err.message, 'error');
+  });
+}
+
+function renderFilteredProfiles(profiles) {
+  const grid = document.getElementById('profileGrid');
+  if (profiles.length === 0) {
+    grid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-text">No results found.<br><span style="font-size:12px;">Try a different name or class.</span></div></div>`;
+    return;
+  }
+  grid.innerHTML = profiles.map(p => `
+    <div class="profile-card" onclick="openProfile('${p.id}')">
+      <div class="profile-avatar">${p.avatar || '🎓'}</div>
+      <div class="profile-name">${esc(p.name)}</div>
+      <div class="profile-class">${esc(p.cls)}</div>
+      <div class="profile-tiers">
+        <span class="profile-tier-pill" style="${tierBadgeStyle('poor')}">FREE</span>
+        <span class="profile-tier-pill" style="${tierBadgeStyle('bronze')}">₹${p.pBronze||29}</span>
+        <span class="profile-tier-pill" style="${tierBadgeStyle('silver')}">₹${p.pSilver||69}</span>
+        <span class="profile-tier-pill" style="${tierBadgeStyle('gold')}">₹${p.pGold||99}</span>
+        <span class="profile-tier-pill" style="${tierBadgeStyle('ultra')}">₹${p.pUltra||149}</span>
+      </div>
+    </div>`).join('');
+}
+
+function filterProfiles(query) {
+  const q = query.trim().toLowerCase();
+  const clearBtn = document.getElementById('searchClear');
+  const countEl = document.getElementById('searchCount');
+  clearBtn.style.display = q ? 'block' : 'none';
+  if (!q) {
+    countEl.style.display = 'none';
+    renderFilteredProfiles(_allProfiles);
+    return;
+  }
+  const filtered = _allProfiles.filter(p =>
+    (p.name||'').toLowerCase().includes(q) ||
+    (p.cls||'').toLowerCase().includes(q)
+  );
+  countEl.style.display = 'block';
+  countEl.textContent = `${filtered.length} result${filtered.length !== 1 ? 's' : ''} found`;
+  renderFilteredProfiles(filtered);
+}
+
+function clearSearch() {
+  const searchEl = document.getElementById('profileSearch');
+  searchEl.value = '';
+  searchEl.focus();
+  document.getElementById('searchClear').style.display = 'none';
+  document.getElementById('searchCount').style.display = 'none';
+  renderFilteredProfiles(_allProfiles);
+}
+
+function backToList() {
+  // Remove viewer listeners
+  if (state._viewerPayListener) { state._viewerPayListener.ref.off('value', state._viewerPayListener.fn); }
+  if (state._viewerComListener) { state._viewerComListener.ref.off('value', state._viewerComListener.fn); }
+  document.getElementById('profileListView').style.display = 'block';
+  document.getElementById('resultViewer').classList.remove('active');
+  state.currentProfile = null;
+}
+
+async function openProfile(id) {
+  const snap = await db.ref('profiles/' + id).once('value');
+  const profile = snap.val();
+  if (!profile) return;
+  state.currentProfile = profile;
+  document.getElementById('profileListView').style.display = 'none';
+  document.getElementById('resultViewer').classList.add('active');
+  window.scrollTo(0, 0);
+
+  // Listen for live pay + comment updates for this viewer
+  startViewerListeners(profile);
+}
+
+function startViewerListeners(profile) {
+  if (state._viewerPayListener) state._viewerPayListener.ref.off('value', state._viewerPayListener.fn);
+  if (state._viewerComListener) state._viewerComListener.ref.off('value', state._viewerComListener.fn);
+
+  const payRef = db.ref('payRequests').orderByChild('studentId').equalTo(profile.id);
+  const comRef = db.ref('commentRequests').orderByChild('studentId').equalTo(profile.id);
+
+  let payData = [], comData = [];
+
+  const payFn = snap => {
+    payData = snap.val() ? Object.values(snap.val()) : [];
+    renderResultViewer(profile, payData, comData);
+  };
+  const comFn = snap => {
+    comData = snap.val() ? Object.values(snap.val()) : [];
+    renderResultViewer(profile, payData, comData);
+  };
+
+  payRef.on('value', payFn);
+  comRef.on('value', comFn);
+
+  state._viewerPayListener = { ref: payRef, fn: payFn };
+  state._viewerComListener = { ref: comRef, fn: comFn };
+}
+
+// ============================
+// RESULT VIEWER RENDER
+// ============================
+function getUnlockedTier(payReqs) {
+  const tiers = ['ultra','gold','silver','bronze'];
+  for (const t of tiers) {
+    if (payReqs.find(r => r.relativeName === state.relativeName && r.tier === t && r.status === 'approved')) return t;
+  }
+  return 'poor';
+}
+
+function getTierStatus(payReqs, tier) {
+  const reqs = payReqs.filter(r => r.relativeName === state.relativeName && r.tier === tier);
+  if (reqs.find(r => r.status === 'approved')) return 'approved';
+  if (reqs.find(r => r.status === 'pending')) return 'pending';
+  if (reqs.find(r => r.status === 'rejected')) return 'rejected';
+  return 'none';
+}
+
+function tierLevel(tier) {
+  return { poor:0, bronze:1, silver:2, gold:3, ultra:4 }[tier] ?? 0;
+}
+
+function renderResultViewer(profile, payReqs, commentReqs) {
+  const unlockedTier = getUnlockedTier(payReqs);
+  const unlockedLevel = tierLevel(unlockedTier);
+
+  document.getElementById('viewerHeader').innerHTML = `
+    <div class="viewer-avatar">${profile.avatar || '🎓'}</div>
+    <div>
+      <div class="viewer-name">${esc(profile.name)} <span class="viewer-relative-tag">Viewing as: ${esc(state.relativeName)}</span></div>
+      <div class="viewer-meta">${esc(profile.cls)} · Published ${timeSince(profile.publishedAt)}</div>
+    </div>`;
+
+  const tiers = [
+    { key:'poor', label:'Poor', price:0, color:'tc-poor', features:['Subject names only','Locked teaser'] },
+    { key:'bronze', label:'Bronze', price:profile.pBronze||29, color:'tc-bronze', features:['Marks per subject','Subject-wise breakdown'] },
+    { key:'silver', label:'Silver', price:profile.pSilver||69, color:'tc-silver', features:['Full marksheet image','Pass / Fail reveal 😱','Screenshot unlock'] },
+    { key:'gold', label:'Gold', price:profile.pGold||99, color:'tc-gold', features:['Everything in Silver','Percentage & Grade','Career plan revealed','NEET/JEE & Boards info','Beta ka personal note 💌'] },
+    { key:'ultra', label:'Ultra', price:profile.pUltra||149, color:'tc-ultra', features:['Everything in Gold','Leave a comment','Family WhatsApp vibes 💬'] }
+  ];
+
+  document.getElementById('tierCardsContainer').innerHTML = tiers.map(t => {
+    const isPoor = t.key === 'poor';
+    const status = isPoor ? 'approved' : getTierStatus(payReqs, t.key);
+    const isUnlocked = isPoor || status === 'approved';
+    const isPending = status === 'pending';
+    const isRejected = status === 'rejected';
+    return `<div class="tier-card ${t.color}">
+      ${isUnlocked ? '<span class="tier-unlocked-badge">✅ Unlocked</span>' : ''}
+      ${isPending ? '<span class="tier-pending-badge">⏳ Pending</span>' : ''}
+      <div class="tc-name">${t.label}</div>
+      <div class="tc-price">${t.price === 0 ? 'FREE' : '<span class="cur">₹</span>' + t.price}</div>
+      <ul class="tc-features">${t.features.map(f=>`<li>✦ ${f}</li>`).join('')}</ul>
+      ${isUnlocked
+        ? `<button class="tc-btn" disabled style="opacity:0.5;cursor:default;">✅ Access Granted</button>`
+        : isPending
+        ? `<button class="tc-btn" disabled style="opacity:0.5;cursor:default;">⏳ Awaiting Approval</button>`
+        : isRejected
+        ? `<div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--danger);text-align:center;margin-bottom:8px;">❌ Payment Rejected<br><span style="color:var(--muted)">Please retry</span></div><button class="tc-btn" onclick="openPayModal('${t.key}','${profile.id}')" style="border-color:rgba(255,68,85,0.3);color:var(--danger);">Retry Payment</button>`
+        : `<button class="tc-btn" onclick="openPayModal('${t.key}','${profile.id}')">Unlock for ₹${t.price}</button>`}
+    </div>`;
+  }).join('');
+
+  // ── Content Sections ──
+  let content = '';
+  const marks = profile.marks || [];
+
+  // POOR TIER: subjects only, blurred teaser if bronze+ locked
+  if (unlockedLevel >= 1) {
+    // BRONZE: show full marks table
+    content += `<div class="content-area">
+      <div class="content-area-title">📋 Subjects & Marks (Bronze)</div>
+      <div class="marks-grid">
+        ${marks.map(m => `
+          <div class="mark-card">
+            <div class="mark-subject">${esc(m.subject)}</div>
+            <div class="mark-score" style="color:var(--accent)">${m.score}</div>
+            <div class="mark-total">out of ${m.total}</div>
+          </div>`).join('')}
+      </div>
+      ${unlockedLevel === 1 ? `<div class="tier-hook">Pass hua ki nahi? 🤔 Screenshot kaisa dikhta hai? <strong>Silver mein dekho →</strong> sirf ₹${profile.pSilver||69}</div>` : ''}
+    </div>`;
+  } else {
+    // POOR: subjects only + blur teaser
+    const subjectCount = marks.length;
+    content += `<div class="content-area">
+      <div class="content-area-title">📋 Subjects (Free Preview)</div>
+      <div class="marks-grid" style="margin-bottom:12px;">
+        ${marks.map(m => `
+          <div class="mark-card">
+            <div class="mark-subject">${esc(m.subject)}</div>
+            <div class="mark-score" style="color:var(--muted);font-size:1.1rem;">🔒</div>
+            <div class="mark-total">Marks hidden</div>
+          </div>`).join('')}
+      </div>
+      <div class="teaser-locked" style="margin-top:8px;">
+        <div class="teaser-inner">
+          <div class="marks-grid">
+            ${marks.map(m => `<div class="mark-card"><div class="mark-subject">${esc(m.subject)}</div><div class="mark-score" style="color:var(--accent)">${Math.floor(Math.random()*30+60)}</div><div class="mark-total">out of 100</div></div>`).join('')}
+          </div>
+        </div>
+        <div class="teaser-overlay">
+          <div style="font-size:2rem;">🔍</div>
+          <div class="teaser-overlay-text">Beta ne <strong>${subjectCount}</strong> subjects liye hain...<br>Kitne mein pass hua? 😏<br><strong style="color:var(--accent2)">Bronze unlock karo ₹${profile.pBronze||29} mein!</strong></div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // SILVER: marksheet + pass/fail reveal
+  if (unlockedLevel >= 2) {
+    // Pass/Fail big reveal
+    const pf = profile.passfail || '';
+    let pfClass = 'passfail-pass', pfEmoji = '🎉', pfText = 'PASS!', pfSub = 'Beta nikal gaya! Badhai ho sabko! 🥳';
+    if (pf === 'fail') { pfClass='passfail-fail'; pfEmoji='😔'; pfText='FAIL'; pfSub='Beta ne mehnat ki, agli baar zaroor karega! 💪'; }
+    if (pf === 'compartment') { pfClass='passfail-comp'; pfEmoji='😬'; pfText='COMPARTMENT'; pfSub='Ek subject mein thodi problem hai — compartment exam hai aage!'; }
+
+    content += `<div class="content-area">
+      <div class="content-area-title">🥈 Silver — Pass/Fail Reveal & Marksheet</div>
+      ${pf ? `<div class="passfail-big ${pfClass}">
+        <div class="passfail-emoji">${pfEmoji}</div>
+        <div class="passfail-text">Beta ${pfText}</div>
+        <div style="font-size:13px;color:var(--muted2);margin-top:8px;font-family:'Space Mono',monospace;">${pfSub}</div>
+      </div>` : ''}
+      ${profile.screenshotUrl
+        ? `<div class="screenshot-frame"><img src="${profile.screenshotUrl}" alt="Result" onclick="openLightboxUrl('${profile.screenshotUrl}')" style="cursor:pointer;"></div>`
+        : `<div class="locked-placeholder"><div class="lock-icon">🖼️</div>Marksheet screenshot unavailable</div>`}
+      ${unlockedLevel === 2 ? `<div class="tier-hook">Percentage kya aayi? Grade kya mila? Aage Doctor banega ya Engineer? 🎯<br><strong>Gold mein full analysis dekho → ₹${profile.pGold||99}</strong></div>` : ''}
+    </div>`;
+  } else if (unlockedLevel < 2) {
+    content += `<div class="content-area">
+      <div class="content-area-title">🥈 Silver — Pass/Fail Reveal & Marksheet</div>
+      <div class="teaser-locked">
+        <div class="teaser-inner" style="padding:20px 0;">
+          <div class="passfail-big passfail-pass" style="filter:blur(8px);">
+            <div class="passfail-emoji">🎉</div>
+            <div class="passfail-text">Beta PASS!</div>
+          </div>
+        </div>
+        <div class="teaser-overlay">
+          <div style="font-size:2.5rem;">😱</div>
+          <div class="teaser-overlay-text"><strong>Beta Pass hua ya Fail?!</strong><br>Pata karo sirf ₹${profile.pSilver||69} mein!<br><span style="color:var(--muted)">Screenshot bhi milega 📄</span></div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // GOLD: desi analysis
+  if (unlockedLevel >= 3) {
+    const total = marks.reduce((s,m) => s + parseInt(m.score||0), 0);
+    const max = marks.reduce((s,m) => s + parseInt(m.total||100), 0);
+    const pct = max > 0 ? ((total/max)*100).toFixed(1) : 'N/A';
+    const grade = getGrade(parseFloat(pct));
+
+    // Career text
+    const careerMap = {
+      doctor: ['🏥','Doctor banna chahta hai!','MBBS ki taiyari chal rahi hai. NEET ki larai toh hogi!'],
+      engineer: ['⚙️','Engineer banna chahta hai!','IIT ya NIT — JEE crack karna target hai. Coding ki duniya mein entry hogi!'],
+      commerce: ['📊','Commerce field choose ki hai!','CA ya MBA ki taraf ja raha hai beta. Paisa banana seekhega!'],
+      arts: ['🎨','Arts/Humanities choose ki!','Creative field mein jaayega beta. Writer, designer, ya kuch aur!'],
+      government: ['🏛️','Government job ka sapna hai!','Sarkari naukri ki taiyari — UPSC ya state PCS?'],
+      undecided: ['🤷','Abhi decide nahi kiya!','Beta abhi soch raha hai. Relatives, suggestions zaroor dena! 😄']
+    };
+    const [cIcon, cTitle, cDesc] = careerMap[profile.career] || ['❓','Career TBD','Beta ne abhi nahi bataya'];
+
+    // NEET/JEE text
+    const neetjeeMap = {
+      neet: ['💉','NEET de raha hai!','Medical entrance exam ki taiyari chal rahi hai. Doctor banne ka raasta!'],
+      jee: ['🔧','JEE de raha hai!','IIT/NIT ke liye larai shuru. Maths-Physics tight honi chahiye!'],
+      both: ['🎯','NEET aur JEE dono!','Beta double ambitious hai! Dono exam dene ka plan hai.'],
+      gave_rank: ['🏆','Pehle hi de chuka hai — Rank bhi aaya!','Beta ne entrance exam crack kar liya! Ab aage ka raasta saaf hai.'],
+      no: ['🙅','Entrance exam nahi de raha','Is field mein entrance exam nahi chahiye ya alag plan hai.']
+    };
+    const [nIcon, nTitle, nDesc] = neetjeeMap[profile.neetjee] || ['❓','Pata nahi','Beta ne nahi bataya'];
+
+    // Boards repeat
+    const boardsMap = {
+      no: ['💪','Boards repeat nahi karega!','Ek hi baar mein nikal liya! Confidence high hai beta ka! 🔥'],
+      yes: ['📚','Boards repeat karega!','Improvement ke liye dobara exam dega. Dedicated student hai!'],
+      considering: ['🤔','Soch raha hai boards repeat karne ka','Abhi decision pending hai. Family support zaroori hai!']
+    };
+    const [bIcon, bTitle, bDesc] = boardsMap[profile.boardsrepeat] || ['❓','Pata nahi','Beta ne nahi bataya'];
+
+    content += `<div class="content-area">
+      <div class="content-area-title">🥇 Gold — Full Analysis & Desi Family Report</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:20px;">
+        <div class="mark-card"><div class="mark-subject">TOTAL MARKS</div><div class="mark-score" style="color:var(--gold)">${total}</div><div class="mark-total">out of ${max}</div></div>
+        <div class="mark-card"><div class="mark-subject">PERCENTAGE</div><div class="mark-score" style="color:var(--cyan);font-size:1.3rem;">${pct}%</div></div>
+        <div class="mark-card"><div class="mark-subject">GRADE</div><div class="mark-score" style="color:var(--accent3);font-size:1.3rem;">${grade}</div></div>
+      </div>
+      <div class="gold-section-label">🎯 Aage Beta Kya Karega?</div>
+      <div class="desi-grid">
+        <div class="desi-card">
+          <div class="desi-card-icon">${cIcon}</div>
+          <div class="desi-card-label">Career Goal</div>
+          <div class="desi-card-value">${cTitle}</div>
+          <div style="font-size:12px;color:var(--muted2);margin-top:6px;line-height:1.5;">${cDesc}</div>
+        </div>
+      </div>
+      <div class="gold-section-label">📝 Entrance Exam Plans</div>
+      <div class="desi-grid">
+        <div class="desi-card">
+          <div class="desi-card-icon">${nIcon}</div>
+          <div class="desi-card-label">NEET / JEE Status</div>
+          <div class="desi-card-value">${nTitle}</div>
+          <div style="font-size:12px;color:var(--muted2);margin-top:6px;line-height:1.5;">${nDesc}</div>
+        </div>
+        <div class="desi-card">
+          <div class="desi-card-icon">${bIcon}</div>
+          <div class="desi-card-label">Boards Repeat?</div>
+          <div class="desi-card-value">${bTitle}</div>
+          <div style="font-size:12px;color:var(--muted2);margin-top:6px;line-height:1.5;">${bDesc}</div>
+        </div>
+      </div>
+      ${profile.personalNote ? `
+      <div class="gold-section-label">💌 Beta Ka Personal Note</div>
+      <div class="desi-card" style="background:linear-gradient(135deg,rgba(127,255,110,0.04),rgba(0,229,255,0.03));border-color:rgba(127,255,110,0.2);">
+        <div style="font-size:1.5rem;margin-bottom:8px;">✉️</div>
+        <div style="font-size:14px;color:var(--text);line-height:1.65;font-style:italic;">"${esc(profile.personalNote)}"</div>
+        <div style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);margin-top:8px;">— ${esc(profile.name)}</div>
+      </div>` : ''}
+      ${unlockedLevel === 3 ? `<div class="tier-hook">Family se seedha baat karni hai? 💬 Comment chhod sakte ho!<br><strong>Ultra unlock karo → ₹${profile.pUltra||149}</strong></div>` : ''}
+    </div>`;
+  } else if (unlockedLevel < 3 && unlockedLevel >= 1) {
+    content += `<div class="content-area">
+      <div class="content-area-title">🥇 Gold — Full Analysis & Desi Family Report</div>
+      <div class="teaser-locked">
+        <div class="teaser-inner">
+          <div class="desi-grid" style="padding:12px 0;">
+            <div class="desi-card"><div class="desi-card-icon">🏥</div><div class="desi-card-label">Career Goal</div><div class="desi-card-value">Doctor banna chahta hai!</div></div>
+            <div class="desi-card"><div class="desi-card-icon">💉</div><div class="desi-card-label">NEET Plan</div><div class="desi-card-value">NEET de raha hai!</div></div>
+          </div>
+        </div>
+        <div class="teaser-overlay">
+          <div style="font-size:2rem;">🤫</div>
+          <div class="teaser-overlay-text"><strong>Aage kya banega beta?</strong><br>Doctor? Engineer? NEET dega?<br>Boards repeat karega ki nahi?<br><strong style="color:var(--gold)">Gold mein sab pata chalega → ₹${profile.pGold||99}</strong></div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  document.getElementById('contentSections').innerHTML = content;
+
+  // Comments
+  const approvedComments = commentReqs.filter(r => r.studentId === profile.id && r.status === 'approved');
+  const myPending = commentReqs.find(r => r.studentId === profile.id && r.relativeName === state.relativeName && r.status === 'pending');
+
+  let comHtml = '';
+  if (approvedComments.length === 0) comHtml = '<div style="color:var(--muted);font-family:\'Space Mono\',monospace;font-size:12px;margin-bottom:16px;">No comments yet. Be the first!</div>';
+  else comHtml = approvedComments.map(c => `
+    <div class="comment-item">
+      <div class="comment-author">${esc(c.relativeName)}</div>
+      <div class="comment-text">${esc(c.text)}</div>
+      <div class="comment-meta">${timeSince(c.timestamp)}</div>
+    </div>`).join('');
+  document.getElementById('commentsList').innerHTML = comHtml;
+
+  const writeArea = document.getElementById('commentWriteArea');
+  if (unlockedLevel >= 4) {
+    writeArea.style.display = 'block';
+    if (myPending) {
+      document.getElementById('commentPendingNote').style.display = 'block';
+      document.getElementById('commentText').disabled = true;
+    } else {
+      document.getElementById('commentPendingNote').style.display = 'none';
+      document.getElementById('commentText').disabled = false;
+    }
+  } else {
+    writeArea.style.display = 'none';
+  }
+}
+
+function pendingOrLockedBlock(status, tier) {
+  if (status === 'pending') return `<div class="pending-status-box"><div class="pending-status-icon">⏳</div><div class="pending-status-title">Verification Pending</div><div class="pending-status-desc">Your payment screenshot has been submitted.<br>Waiting for student approval. This updates live!</div></div>`;
+  if (status === 'rejected') return `<div class="rejected-status-box"><div class="pending-status-icon">❌</div><div class="pending-status-title" style="color:var(--danger);font-weight:700;">Payment Verification Failed</div><div class="pending-status-desc" style="font-size:12px;color:var(--muted2);margin-top:8px;">Please retry with a clear screenshot showing the transaction amount and ID.</div></div>`;
+  return `<div class="locked-placeholder"><div class="lock-icon">🔒</div>Unlock ${tier} tier to view this content</div>`;
+}
+
+async function submitComment() {
+  const text = document.getElementById('commentText').value.trim();
+  if (!text) { showToast('Please write a comment!', 'error'); return; }
+  const profile = state.currentProfile;
+  if (!profile) return;
+
+  try {
+    const id = 'cr_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+    await db.ref('commentRequests/' + id).set({
+      id,
+      studentId: profile.id,
+      relativeName: state.relativeName,
+      text,
+      status: 'pending',
+      timestamp: Date.now()
+    });
+    document.getElementById('commentPendingNote').style.display = 'block';
+    document.getElementById('commentText').value = '';
+    document.getElementById('commentText').disabled = true;
+    showToast('✅ Comment sent for approval!', 'success');
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
+}
+
+// ============================
+// PAYMENT MODAL
+// ============================
+function openPayModal(tier, profileId) {
+  db.ref('profiles/' + profileId).once('value').then(snap => {
+    const profile = snap.val();
+    if (!profile) return;
+    const amounts = { bronze: profile.pBronze||29, silver: profile.pSilver||69, gold: profile.pGold||99, ultra: profile.pUltra||149 };
+    const amount = amounts[tier] || 0;
+
+    state.currentModal = { tier, profile, amount };
+    state.screenshotDataUrl = null;
+
+    document.getElementById('modalTitle').textContent = `Unlock ${tier.charAt(0).toUpperCase()+tier.slice(1)} Tier`;
+    document.getElementById('modalSub').textContent = `Pay ₹${amount} to ${profile.name} via UPI`;
+    document.getElementById('modalAmount').textContent = '₹' + amount;
+    document.getElementById('modalUpi').textContent = profile.upi;
+
+    const qrEl = document.getElementById('modalQr');
+    if (profile.qrUrl) { document.getElementById('modalQrImg').src = profile.qrUrl; qrEl.style.display = 'block'; }
+    else qrEl.style.display = 'none';
+
+    document.getElementById('screenshotFile').value = '';
+    document.getElementById('screenshotPreview').style.display = 'none';
+    document.getElementById('screenshotPreview').src = '';
+    document.getElementById('sendRequestBtn').style.display = 'none';
+
+    goModalStep(1);
+    document.getElementById('paymentModal').classList.add('open');
+  });
+}
+
+function closeModal() { document.getElementById('paymentModal').classList.remove('open'); }
+
+function goModalStep(step) {
+  [1,2,3].forEach(s => {
+    document.getElementById('mpanel'+s).classList.toggle('active', s === step);
+    const el = document.getElementById('mstep'+s);
+    el.classList.remove('active','done');
+    if (s < step) el.classList.add('done');
+    if (s === step) el.classList.add('active');
+  });
+}
+
+function copyUpi() {
+  const upi = state.currentModal.profile?.upi;
+  if (!upi) return;
+  navigator.clipboard.writeText(upi).then(() => {
+    const el = document.getElementById('modalUpi');
+    const orig = el.textContent;
+    el.textContent = '✅ Copied!';
+    setTimeout(() => el.textContent = orig, 1500);
+  });
+}
+
+function handleScreenshot(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    state.screenshotDataUrl = e.target.result;
+    const preview = document.getElementById('screenshotPreview');
+    preview.src = e.target.result;
+    preview.style.display = 'block';
+    document.getElementById('sendRequestBtn').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function sendRequest() {
+  if (!state.screenshotDataUrl) { showToast('Please upload a payment screenshot!', 'error'); return; }
+  const { tier, profile, amount } = state.currentModal;
+  const btn = document.getElementById('sendRequestBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Uploading…';
+
+  try {
+    const id = 'pr_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+    // Compress screenshot and store as base64 directly in DB (no Storage needed)
+    const screenshotB64 = await compressImage(state.screenshotDataUrl, 800, 0.7);
+
+    await db.ref('payRequests/' + id).set({
+      id,
+      studentId: profile.id,
+      relativeName: state.relativeName,
+      tier,
+      amount,
+      screenshotUrl: screenshotB64,
+      status: 'pending',
+      timestamp: Date.now()
+    });
+    goModalStep(3);
+  } catch(e) {
+    showToast('Error sending request: ' + e.message, 'error');
+    console.error(e);
+  }
+  btn.disabled = false;
+  btn.textContent = 'Send Verification Request →';
+}
+
+// ============================
+// LIGHTBOX
+// ============================
+function openLightboxUrl(url) {
+  document.getElementById('lightbox-img').src = url;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+
+// ============================
+// UTILS
+// ============================
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function timeSince(ts) {
+  if (!ts) return '';
+  const d = Date.now() - ts;
+  if (d < 60000) return 'just now';
+  if (d < 3600000) return Math.floor(d/60000) + 'm ago';
+  if (d < 86400000) return Math.floor(d/3600000) + 'h ago';
+  return Math.floor(d/86400000) + 'd ago';
+}
+function getGrade(pct) {
+  if (pct >= 90) return 'A+';
+  if (pct >= 80) return 'A';
+  if (pct >= 70) return 'B+';
+  if (pct >= 60) return 'B';
+  if (pct >= 50) return 'C';
+  return 'D';
+}
+function tierBadgeStyle(tier) {
+  const map = {
+    poor:'background:rgba(100,100,100,0.1);color:#888;border:1px solid rgba(100,100,100,0.25);',
+    bronze:'background:rgba(205,127,50,0.12);color:#cd7f32;border:1px solid rgba(205,127,50,0.3);',
+    free:'background:rgba(127,255,110,0.1);color:#7fff6e;border:1px solid rgba(127,255,110,0.25);',
+    silver:'background:rgba(200,200,216,0.1);color:#c8c8d8;border:1px solid rgba(200,200,216,0.25);',
+    gold:'background:rgba(255,215,0,0.1);color:#ffd700;border:1px solid rgba(255,215,0,0.25);',
+    ultra:'background:rgba(176,107,255,0.1);color:#b06bff;border:1px solid rgba(176,107,255,0.25);'
+  };
+  return map[tier] || '';
+}
+</script>
+</body>
+</html>
