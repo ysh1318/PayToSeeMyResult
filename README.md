@@ -3,10 +3,10 @@
 Interactive result monetisation platform with futuristic UI, payment flow, dashboards, and tier-based content unlocking.
 
 ## Landing Page
-https://resultmonetisation.netlify.app/
+https://relativetax.netlify.app
 
 ## Live Demo
-https://resultmonetisation3314.netlify.app/
+https://paytoseemyresult.netlify.app
 
 ## Features
 - Tier-based access system
